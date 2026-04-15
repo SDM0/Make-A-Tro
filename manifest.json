@@ -1,0 +1,14 @@
+{
+	"id": "makeatro",
+	"name": "Make-A-Tro",
+	"author": ["SDM_0"],
+	"description": "Create your own Jokers with its headset, make-up and collar",
+	"prefix": "mat",
+	"main_file": "main.lua",
+	"badge_colour": "009dff",
+	"no_marquee": true,
+	"version": "1.0.0a",
+	"dependencies": [
+		"Steamodded (>=1.0.0~ALPHA-1016c)"
+	]
+}

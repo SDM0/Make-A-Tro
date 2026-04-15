@@ -1,0 +1,80 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+# Modify "Next Round" and "Reroll" button size
+# [[patches]]
+# [patches.pattern]
+# target = "functions/UI_definitions.lua"
+# pattern = """
+#               }, false)
+#         }}
+# """
+# position = "after"
+# payload = """
+# t.nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].config.minh = 1.0
+# t.nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].nodes[2].config.minh = 1.0
+# """
+# match_indent = true
+
+# Add Make-A-Tro button
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = """
+                              {n=G.UIT.T, config={ref_table = G.GAME.current_round, ref_value = 'reroll_cost', scale = 0.75, colour = G.C.WHITE, shadow = true}},
+                            }}
+                          }}
+                        }},
+"""
+position = "after"
+payload = """
+                        {n=G.UIT.R, config={align = "cm", minw = 2.8, minh = 1.0, r=0.15,colour = G.C.GOLD, button = 'mat_create_joker', func = 'mat_can_create_joker', hover = true,shadow = true}, nodes = {
+                          {n=G.UIT.R, config={align = "cm", padding = 0.07, focus_args = {button = 'z', orientation = 'cr'}, func = 'set_button_pip'}, nodes={
+                            {n=G.UIT.R, config={align = "cm", maxw = 1.3}, nodes={
+                              {n=G.UIT.T, config={text = localize('b_mat_create_joker_1'), scale = 0.4, colour = G.C.WHITE, shadow = true}}
+                            }},
+                            {n=G.UIT.R, config={align = "cm", maxw = 1.3}, nodes={
+                              {n=G.UIT.T, config={text = localize('b_mat_create_joker_2'), scale = 0.4, colour = G.C.WHITE, shadow = true}}
+                            }}
+                          }}
+                        }},
+"""
+match_indent = true
+
+# Fuse hat, head and collar consumable collections
+[[patches]]
+[patches.pattern]
+target = '=[SMODS _ "src/ui.lua"]'
+pattern = "                t[#t+1] = UIBox_button({button = id, label = {localize('b_'..key:lower()..'_cards')}, count = G.ACTIVE_MOD_UI and modsCollectionTally(G.P_CENTER_POOLS[key]) or G.DISCOVER_TALLIES[key:lower()..'s'], minw = 4, id = id, colour = G.C.SECONDARY_SET[key], text_colour = G.C.UI[key]})"
+position = "after"
+payload = """
+if key == 'Mat_collar' then
+  local all_obj = {}
+  for i = 0, #G.P_CENTER_POOLS['Mat_collar'] do
+      all_obj[#all_obj+1] = G.P_CENTER_POOLS['Mat_hat'][i]
+      all_obj[#all_obj+1] = G.P_CENTER_POOLS['Mat_head'][i]
+      all_obj[#all_obj+1] = G.P_CENTER_POOLS['Mat_collar'][i]
+  end
+  local objs_tally = G.DISCOVER_TALLIES['mat_hats'].tally + G.DISCOVER_TALLIES['mat_heads'].tally + G.DISCOVER_TALLIES['mat_collars'].tally
+  local objs_of = G.DISCOVER_TALLIES['mat_hats'].of + G.DISCOVER_TALLIES['mat_heads'].of + G.DISCOVER_TALLIES['mat_collars'].of
+  local obj_discover_tallies = {tally = objs_tally, of = objs_of}
+  t[#t] = UIBox_button({button = id, label = {localize('b_mat_material_cards')}, count = G.ACTIVE_MOD_UI and modsCollectionTally(all_obj) or obj_discover_tallies, minw = 4, id = id, colour = G.C.GOLD, text_colour = G.C.UI[key]})
+end
+"""
+match_indent = true
+
+
+# Midas Mask object effect
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "-- TARGET: get_h_dollars"
+position = "after"
+payload = """
+if not self.debuff and self:is_face() and SMODS.has_enhancement(self, 'm_gold') and next(mat_mod.find_object("midas_mask")) then
+  ret = ret + (2 * #mat_mod.find_object("midas_mask"))
+end
+"""
+match_indent = true
