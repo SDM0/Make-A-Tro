@@ -1,6 +1,11 @@
 mat_mod = SMODS.current_mod
 mat_mod.objects = {"hat", "head", "collar"}
 
+-- TODOS: 
+-- Add purchased objects to some "Run Info" tab
+-- Make better collection system for materials
+-- Add counter to "Create Joker" button (ex: 1Ha / 2He / 1CO)
+
 assert(SMODS.load_file("data/utils.lua"))()
 assert(SMODS.load_file("data/overrides.lua"))()
 assert(SMODS.load_file("data/objects.lua"))()

@@ -168,8 +168,8 @@ function mat_mod.get_parent_obj(obj)
             end
         end
     end
-    print("obj not found")
-    print(obj)
+    --print("obj not found")
+    --print(obj)
 end
 
 -- Used for the "Pareidolia" object
