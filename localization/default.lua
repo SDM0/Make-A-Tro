@@ -31,6 +31,13 @@ local loc = {
             j_mat_custom_joker = {
                 name = "#1# Joker",
                 text = {{"{elements:1}{}"},{},{}}
+            },
+            j_mat_unknown_joker = {
+                name = "Custom Joker",
+                text = {
+                    "Requires a {C:red}Hat{},",
+                    "{C:attention}Head{} and {C:chips}Collar{}"
+                }
             }
         },
         Back = {

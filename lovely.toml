@@ -24,6 +24,15 @@ local function mat_resize_shop_btns(node)
         end
     end
 
+    if node.n == G.UIT.T then
+        if node.config.text == localize('$') then
+            node.config.scale = 0.5
+        end
+        if node.config.ref_value == 'reroll_cost' then
+            node.config.scale = 0.55
+        end
+    end
+
     if node.nodes then
         for _, c in ipairs(node.nodes) do
             mat_resize_shop_btns(c)
@@ -47,7 +56,7 @@ pattern = """
 """
 position = "after"
 payload = """
-                        {n=G.UIT.R, config={align = "cm", minw = 2.8, minh = 1.0, r=0.15,colour = G.C.GOLD, button = 'mat_create_joker', func = 'mat_can_create_joker', hover = true,shadow = true}, nodes = {
+                        {n=G.UIT.R, config={align = "cm", minw = 2.8, minh = 1.0, r=0.15,colour = G.C.GOLD, button = 'mat_create_joker', hover = true, shadow = true}, nodes = {
                           {n=G.UIT.R, config={align = "cm", padding = 0.07, focus_args = {button = 'z', orientation = 'cr'}, func = 'set_button_pip'}, nodes={
                             {n=G.UIT.R, config={align = "cm", maxw = 1.3}, nodes={
                               {n=G.UIT.T, config={text = localize('b_mat_create_joker_1'), scale = 0.4, colour = G.C.WHITE, shadow = true}}

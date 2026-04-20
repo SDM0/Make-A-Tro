@@ -10,8 +10,8 @@ SMODS.Rarity{
 --- Custom Joker ---
 
 SMODS.Atlas{
-    key = "mat_joker",
-    path = "mat_joker.png",
+    key = "mat_jokers",
+    path = "mat_jokers.png",
     px = 71,
     py = 95
 }
@@ -111,7 +111,7 @@ SMODS.Joker{
     in_pool = function() return false end,
     discovered = true,
     no_collection = true,
-    atlas = "mat_joker"
+    atlas = "mat_jokers"
 }
 
 SMODS.DrawStep{
@@ -129,4 +129,15 @@ SMODS.DrawStep{
         end
     end,
     conditions = {vortex = false, facing = 'front'}
+}
+
+SMODS.Joker{
+    key = "unknown_joker",
+    name = "Unknown Joker",
+    rarity = "mat_special",
+    pos = {x = 1, y = 0},
+    in_pool = function() return false end,
+    discovered = true,
+    no_collection = true,
+    atlas = "mat_jokers"
 }

@@ -11,10 +11,20 @@ assert(SMODS.load_file("data/overrides.lua"))()
 assert(SMODS.load_file("data/objects.lua"))()
 assert(SMODS.load_file("data/joker.lua"))()
 
-G.FUNCS.mat_can_create_joker = function(e)
+G.FUNCS.mat_can_add_joker = function(e)
 	if mat_mod.all_one_min() and #G.jokers.cards < G.jokers.config.card_limit then
 		e.config.colour = G.C.GOLD
-		e.config.button = 'mat_create_joker'
+		e.config.button = 'mat_add_joker'
+	else
+		e.config.colour = G.C.UI.BACKGROUND_INACTIVE
+		e.config.button = nil
+	end
+end
+
+G.FUNCS.mat_can_select_object = function(e)
+	if G.GAME["used_" .. e.config.id] and G.GAME["used_" .. e.config.id][1] then
+		e.config.colour = G.C.RED
+		e.config.button = 'your_collection_objects'
 	else
 		e.config.colour = G.C.UI.BACKGROUND_INACTIVE
 		e.config.button = nil
@@ -128,11 +138,41 @@ function create_UIBox_mat_joker_creation(e)
 		}}
 	)
 
-	local card = Card(G.your_collection.T.x + G.your_collection.T.w / 2, G.your_collection.T.y, G.CARD_W, G.CARD_H, nil, G.P_CENTERS['j_mat_custom_joker'])
+	local unselected_mat = 0
 
-	card.ability.extra.hat = G.GAME.saved_hat_selection and mat_mod.init_obj(G.GAME.saved_hat_selection) or mat_mod.init_obj(G.GAME.used_mat_hat[1])
-	card.ability.extra.head = G.GAME.saved_head_selection and mat_mod.init_obj(G.GAME.saved_head_selection) or mat_mod.init_obj(G.GAME.used_mat_head[1])
-	card.ability.extra.collar = G.GAME.saved_collar_selection and mat_mod.init_obj(G.GAME.saved_collar_selection) or mat_mod.init_obj(G.GAME.used_mat_collar[1])
+	local chosen_hat = mat_mod.init_obj("c_mat_joker_hat")
+	if G.GAME.saved_hat_selection then chosen_hat = mat_mod.init_obj(G.GAME.saved_hat_selection)
+	elseif G.GAME.used_mat_hat and G.GAME.used_mat_hat[1] then chosen_hat = mat_mod.init_obj(G.GAME.used_mat_hat[1])
+	else
+		unselected_mat = unselected_mat + 1
+	end
+
+	local chosen_head = mat_mod.init_obj("c_mat_joker_head")
+	if G.GAME.saved_head_selection then chosen_head = mat_mod.init_obj(G.GAME.saved_head_selection)
+	elseif G.GAME.used_mat_head and G.GAME.used_mat_head[1] then chosen_head = mat_mod.init_obj(G.GAME.used_mat_head[1])
+	else
+		unselected_mat = unselected_mat + 1
+	end
+
+	local chosen_collar = mat_mod.init_obj("c_mat_joker_collar")
+	if G.GAME.saved_collar_selection then chosen_collar = mat_mod.init_obj(G.GAME.saved_collar_selection)
+	elseif G.GAME.used_mat_collar and G.GAME.used_mat_collar[1] then chosen_collar = mat_mod.init_obj(G.GAME.used_mat_collar[1])
+	else
+		unselected_mat = unselected_mat + 1
+	end
+
+	local _center = G.P_CENTERS['j_mat_custom_joker']
+	if unselected_mat > 0 then
+		_center = G.P_CENTERS['j_mat_unknown_joker']
+	end
+
+	local card = Card(G.your_collection.T.x + G.your_collection.T.w / 2, G.your_collection.T.y, G.CARD_W, G.CARD_H, nil, _center)
+
+	if _center == G.P_CENTERS['j_mat_custom_joker'] then
+		card.ability.extra.hat = chosen_hat
+		card.ability.extra.head = chosen_head
+		card.ability.extra.collar = chosen_collar
+	end
 
 	G.your_collection:emplace(card)
 
@@ -171,21 +211,21 @@ function create_UIBox_mat_joker_creation(e)
 										nodes = {
 											{
 												n = G.UIT.R,
-												config = { id = 'mat_hat', align = "cm", r = 0.1, minw = 3, minh = 0.7, hover = true, colour = G.C.RED, shadow = true, button = "your_collection_objects", focus_args = { type = 'none' } },
+												config = { id = 'mat_hat', align = "cm", r = 0.1, minw = 3, minh = 0.7, hover = true, colour = G.C.RED, shadow = true, button = "your_collection_objects", func = "mat_can_select_object", focus_args = { type = 'none' } },
 												nodes = {
 													{ n = G.UIT.T, config = {align = "cm", size = 1, text = localize('b_mat_select_hat'), scale = 0.5, colour = G.C.UI.TEXT_LIGHT } }
 												}
 											},
 											{
 												n = G.UIT.R,
-												config = { id = 'mat_head', align = "cm", r = 0.1, minw = 3, minh = 0.7, hover = true, colour = G.C.RED, shadow = true, button = "your_collection_objects", focus_args = { type = 'none' } },
+												config = { id = 'mat_head', align = "cm", r = 0.1, minw = 3, minh = 0.7, hover = true, colour = G.C.RED, shadow = true, button = "your_collection_objects", func = "mat_can_select_object", focus_args = { type = 'none' } },
 												nodes = {
 													{ n = G.UIT.T, config = {align = "cm", size = 1, text = localize('b_mat_select_head'), scale = 0.5, colour = G.C.UI.TEXT_LIGHT } }
 												}
 											},
 											{
 												n = G.UIT.R,
-												config = { id = 'mat_collar', align = "cm", r = 0.1, minw = 3, minh = 0.7, hover = true, colour = G.C.RED, shadow = true, button = "your_collection_objects", focus_args = { type = 'none' } },
+												config = { id = 'mat_collar', align = "cm", r = 0.1, minw = 3, minh = 0.7, hover = true, colour = G.C.RED, shadow = true, button = "your_collection_objects", func = "mat_can_select_object", focus_args = { type = 'none' } },
 												nodes = {
 													{ n = G.UIT.T, config = {align = "cm", size = 1, text = localize('b_mat_select_collar'), scale = 0.5, colour = G.C.UI.TEXT_LIGHT } }
 												}
@@ -196,7 +236,7 @@ function create_UIBox_mat_joker_creation(e)
 							},
 							{
 								n = G.UIT.R,
-								config = { id = 'overlay_menu_mat_create_button', align = "cm", minw = 2.5, button_delay = 0, padding = 0.1, r = 0.1, hover = true, colour = G.C.GREEN, card = card, button = "mat_add_joker", shadow = true, focus_args = { nav = 'wide', button = 'c', snap_to = true } },
+								config = { id = 'overlay_menu_mat_create_button', align = "cm", minw = 2.5, button_delay = 0, padding = 0.1, r = 0.1, hover = true, colour = G.C.GREEN, card = card, button = "mat_add_joker", func = "mat_can_add_joker", shadow = true, focus_args = { nav = 'wide', button = 'c', snap_to = true } },
 								nodes = {
 									{
 										n = G.UIT.R,
