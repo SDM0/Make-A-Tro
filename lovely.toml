@@ -4,19 +4,36 @@ dump_lua = true
 priority = 0
 
 # Modify "Next Round" and "Reroll" button size
-# [[patches]]
-# [patches.pattern]
-# target = "functions/UI_definitions.lua"
-# pattern = """
-#               }, false)
-#         }}
-# """
-# position = "after"
-# payload = """
-# t.nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].config.minh = 1.0
-# t.nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].nodes[1].nodes[2].config.minh = 1.0
-# """
-# match_indent = true
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = """
+              }, false)
+        }}
+"""
+position = "after"
+payload = """
+local function mat_resize_shop_btns(node)
+    if not node then return end
+
+    if node.config then
+        if node.config.id == 'next_round_button' then
+            node.config.minh = 1.0
+        elseif node.config.button == 'reroll_shop' then
+            node.config.minh = 1.0
+        end
+    end
+
+    if node.nodes then
+        for _, c in ipairs(node.nodes) do
+            mat_resize_shop_btns(c)
+        end
+    end
+end
+
+mat_resize_shop_btns(t)
+"""
+match_indent = true
 
 # Add Make-A-Tro button
 [[patches]]
@@ -61,6 +78,7 @@ if key == 'Mat_collar' then
   local objs_of = G.DISCOVER_TALLIES['mat_hats'].of + G.DISCOVER_TALLIES['mat_heads'].of + G.DISCOVER_TALLIES['mat_collars'].of
   local obj_discover_tallies = {tally = objs_tally, of = objs_of}
   t[#t] = UIBox_button({button = id, label = {localize('b_mat_material_cards')}, count = G.ACTIVE_MOD_UI and modsCollectionTally(all_obj) or obj_discover_tallies, minw = 4, id = id, colour = G.C.GOLD, text_colour = G.C.UI[key]})
+  --TODO: Fix the button in SMODS menu, or like do a better system overall
 end
 """
 match_indent = true
