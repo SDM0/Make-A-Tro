@@ -1113,11 +1113,13 @@ for _, obj in ipairs(mat_mod.objects) do
         soul_pos = {x = 2, y = 5},
         rarity = 1,
         mat_calculate_obj = function(self, card, context)
-            local _mult = math.floor(G.GAME.hands[context.scoring_name].played / 2)
-            if context.joker_main and _mult ~= 0 then
-                return {
-                    mult = _mult
-                }
+            if context.joker_main then
+                local _mult = math.floor(G.GAME.hands[context.scoring_name].played / 2)
+                if _mult ~= 0 then
+                    return {
+                        mult = _mult
+                    }
+                end
             end
         end
     }
@@ -2510,7 +2512,7 @@ for _, obj in ipairs(mat_mod.objects) do
         config = {extra = {odds = 4}},
         loc_vars = function(self, info_queue, card)
             local num, den = SMODS.get_probability_vars(card, (G.GAME.probabilities.normal or 1), card.ability.extra.odds, "mat_hallucination")
-            return { vars = {card.ability.extra.dollars, num, den}}
+            return { vars = {num, den}}
         end,
         mat_calculate_obj = function(self, card, context)
             if context.open_booster and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
@@ -3347,26 +3349,44 @@ for _, obj in ipairs(mat_mod.objects) do
         name = "Smeared " .. upp_obj,
         soul_pos = {x = 9, y = 11},
         rarity = 2,
-        config = {extra = {xmult = 1.5}},
+        config = {extra = {Xmult = 1.75}},
         loc_vars = function(self, info_queue, card)
             info_queue[#info_queue+1] = G.P_CENTERS["j_smeared"]
-            info_queue[#info_queue+1] = G.P_CENTERS["m_wild"]
-            return { vars = { card.ability.extra.xmult } }
+            return { vars = { card.ability.extra.Xmult } }
         end,
         mat_calculate_obj = function(self, card, context)
-            if context.individual and context.cardarea == G.play and SMODS.has_enhancement(context.other_card, "m_wild") then
-                return {
-                    xmult = card.ability.extra.xmult
-                }
+            if context.joker_main and (next(context.poker_hands['Flush'])) then
+                local suits = {}
+                local suit_count = 0
+                for _, v in ipairs(context.scoring_hand) do
+                    if not (SMODS.has_no_suit(v) or v.debuff) and not suits[v.base_suit] then
+                        suit_count = suit_count + 1
+                        suits[v.base.suit] = true
+                    end
+                end
+                if suit_count > 1 then
+                    return {
+                        xmult = card.ability.extra.Xmult
+                    }
+                end
             end
         end,
     }
+
+    function mat_mod.smeared_obj_check(card, suit)
+        if ((card.base.suit == 'Hearts' or card.base.suit == 'Diamonds') and (suit == 'Hearts' or suit == 'Diamonds')) then
+            return true
+        elseif (card.base.suit == 'Spades' or card.base.suit == 'Clubs') and (suit == 'Spades' or suit == 'Clubs') then
+            return true
+        end
+        return false
+    end
 
     local card_is_suit_ref = Card.is_suit
     function Card:is_suit(suit, bypass_debuff, flush_calc)
         local ret = card_is_suit_ref(self, suit, bypass_debuff, flush_calc)
         if not ret and not SMODS.has_no_suit(self) and next(mat_mod.find_object("smeared")) then
-            return SMODS.smeared_check(self, suit)
+            return mat_mod.smeared_obj_check(self, suit)
         end
         return ret
     end

@@ -698,8 +698,9 @@ local jokers = {
     },
     smeared = {
         "{C:attention}Smeared{} effect",
-        "Scored {C:attention}Wild{} cards",
-        "give {X:red,C:white}X#1#{} Mult"
+        "{X:red,C:white}X#1#{} Mult if played",
+        "hand contains a {C:attention}2{}",
+        "suits {C:attention}Flush{}"
     },
     smiley = {
         "Played {C:attention}face{} cards",
@@ -733,10 +734,10 @@ local jokers = {
         "{C:inactive}(Currently {X:mult,C:white} X#2# {C:inactive} Mult)",
     },
     stencil = {
-        "{X:red,C:white} X1 {} Mult for each",
+        "{X:red,C:white} X#1# {} Mult for each",
         "empty {C:attention}Joker{} slot",
         "{s:0.8}Joker Stencil included",
-        "{C:inactive}(Currently {X:red,C:white} X#1# {C:inactive})",
+        "{C:inactive}(Currently {X:red,C:white} X#2# {C:inactive})",
     },
     stone = {
         "Gives {C:chips}+#1#{} Chips for",
