@@ -31,32 +31,24 @@ SMODS.Joker{
 
         local name = mat_mod.generate_name({hat = hat, head = head, collar = collar})
 
-        local seen = {}
-
-        local h
         -- Dumb horrible info_queue fetching
-        if G.P_CENTERS[hat.key].loc_vars and type(G.P_CENTERS[hat.key].loc_vars) == 'function' then
-            seen[hat.key:match("(.+)_")] = true
-            h = G.P_CENTERS[hat.key]:loc_vars(info_queue, hat)
-        end
-        if not seen[head.key:match("(.+)_")] and G.P_CENTERS[head.key].loc_vars and type(G.P_CENTERS[head.key].loc_vars) == 'function' then
-            seen[head.key:match("(.+)_")] = true
-            G.P_CENTERS[head.key]:loc_vars(info_queue, head)
-        end
-        if not seen[collar.key:match("(.+)_")] and G.P_CENTERS[collar.key].loc_vars and type(G.P_CENTERS[collar.key].loc_vars) == 'function' then
-            G.P_CENTERS[collar.key]:loc_vars(info_queue, collar)
-        end
+        -- TODO: Do it
+        --G.P_CENTERS[hat.key]:loc_vars(info_queue, hat)
+        --G.P_CENTERS[head.key]:loc_vars(info_queue, head)
+        --G.P_CENTERS[collar.key]:loc_vars(info_queue, collar)
 
-        print(h)
-        local _main_end = nil
-        if h and h.main_end then
-            _main_end = h.main_end
-            print("main_end set")
-        end
+        --print(info_queue)
+
+        --print(h)
+        --local _main_end = nil
+        --if h and h.main_end then
+        --    _main_end = h.main_end
+        --    --print("main_end set")
+        --end
 
         -- TODO: Figure out main_end/main_start fetching ugh
 
-        return {vars = {name}, elements = {_main_end} or nil}
+        return {vars = {name}}
     end,
     set_ability = function(self, card, initial, delay_sprites)
         card.ability.extra.hat = mat_mod.init_obj("c_mat_joker_hat")
@@ -124,12 +116,15 @@ SMODS.Joker{
 
 SMODS.DrawStep{
     key = 'mat_object',
-    order = -9,
+    order = 21,
     func = function(self)
         if self.config.center_key == "j_mat_custom_joker" then
             for _, obj in ipairs(mat_mod.objects) do
                 mat_mod[self.ability.extra[obj].key].role.draw_major = self
                 mat_mod[self.ability.extra[obj].key]:draw_shader('dissolve', nil, nil, nil, self.children.center)
+                if self.edition then
+                    mat_mod[self.ability.extra[obj].key]:draw_shader(G.P_CENTERS[self.edition.key].shader, nil, self.ARGS.send_to_shader, nil, self.children.center)
+                end
             end
         end
     end,
