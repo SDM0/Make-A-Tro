@@ -69,30 +69,6 @@ payload = """
 """
 match_indent = true
 
-# Fuse hat, head and collar consumable collections
-[[patches]]
-[patches.pattern]
-target = '=[SMODS _ "src/ui.lua"]'
-pattern = "                t[#t+1] = UIBox_button({button = id, label = {localize('b_'..key:lower()..'_cards')}, count = G.ACTIVE_MOD_UI and modsCollectionTally(G.P_CENTER_POOLS[key]) or G.DISCOVER_TALLIES[key:lower()..'s'], minw = 4, id = id, colour = G.C.SECONDARY_SET[key], text_colour = G.C.UI[key]})"
-position = "after"
-payload = """
-if key == 'Mat_collar' then
-  local all_obj = {}
-  for i = 0, #G.P_CENTER_POOLS['Mat_collar'] do
-      all_obj[#all_obj+1] = G.P_CENTER_POOLS['Mat_hat'][i]
-      all_obj[#all_obj+1] = G.P_CENTER_POOLS['Mat_head'][i]
-      all_obj[#all_obj+1] = G.P_CENTER_POOLS['Mat_collar'][i]
-  end
-  local objs_tally = G.DISCOVER_TALLIES['mat_hats'].tally + G.DISCOVER_TALLIES['mat_heads'].tally + G.DISCOVER_TALLIES['mat_collars'].tally
-  local objs_of = G.DISCOVER_TALLIES['mat_hats'].of + G.DISCOVER_TALLIES['mat_heads'].of + G.DISCOVER_TALLIES['mat_collars'].of
-  local obj_discover_tallies = {tally = objs_tally, of = objs_of}
-  t[#t] = UIBox_button({button = id, label = {localize('b_mat_material_cards')}, count = G.ACTIVE_MOD_UI and modsCollectionTally(all_obj) or obj_discover_tallies, minw = 4, id = id, colour = G.C.GOLD, text_colour = G.C.UI[key]})
-  --TODO: Fix the button in SMODS menu, or like do a better system overall
-end
-"""
-match_indent = true
-
-
 # Midas Mask object effect
 [[patches]]
 [patches.pattern]

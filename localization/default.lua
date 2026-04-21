@@ -20,7 +20,8 @@ local loc = {
             b_mat_head_cards = "Heads",
             k_mat_collar = "Collar",
             b_mat_collar_cards = "Collars",
-            b_mat_material_cards = "Materials",
+            k_mat_obj = "Materials",
+            b_mat_obj_cards = "Materials",
 
             k_mat_active = "Active",
             k_mat_inactive = "Inactive"
@@ -61,15 +62,15 @@ local loc = {
                     'Find this hat in an unseeded',
                     'run to find out what it does'
                 }
-        },
-        undiscovered_mat_head = {
+            },
+            undiscovered_mat_head = {
                 name = 'Not Discovered',
                 text = {
                     'Find this head in an unseeded',
                     'run to find out what it does'
                 }
-        },
-        undiscovered_mat_collar = {
+            },
+            undiscovered_mat_collar = {
                 name = 'Not Discovered',
                 text = {
                     'Find this collar in an unseeded',
@@ -873,29 +874,19 @@ local jokers = {
     }
 }
 
-local hats = {}
-local heads = {}
-local collars = {}
+local materials = {}
 local objects = {"hat", "head", "collar"}
-
-local type_tables = {
-    hat = hats,
-    head = heads,
-    collar = collars
-}
 
 for _, type in ipairs(objects) do
     for joker_key, loc in pairs(jokers) do
         local joker = G.P_CENTERS["c_mat_" .. joker_key .. "_" .. type]
-        type_tables[type]["c_mat_" .. joker_key .. "_" .. type] = {
+        materials["c_mat_" .. joker_key .. "_" .. type] = {
             name = (joker and joker.name) or "ERROR",
             text = loc
         }
     end
 end
 
-loc.descriptions.Mat_hat = hats
-loc.descriptions.Mat_head = heads
-loc.descriptions.Mat_collar = collars
+loc.descriptions.Mat_obj = materials
 
 return loc
