@@ -23,6 +23,8 @@ SMODS["Mat_obj"] = SMODS.Consumable:extend({
     cost = 4,
     rarity = 1,
     mat_type = "hat",
+    mat_joker_pos = {x = 0, y = 0},
+    mat_joker_atlas = "mat_joker_hats",
     can_use = function() return true end,
     use = function(self, card)
         local used = "used_mat_" .. self.mat_type
@@ -46,14 +48,7 @@ SMODS["Mat_obj"] = SMODS.Consumable:extend({
     end,
     inject = function(self)
         SMODS.Consumable.inject(self)
-
-        local pos = positions[self.mat_type]
-        mat_mod[self.key] = Sprite(0, 0, G.CARD_W, G.CARD_H, G.ASSET_ATLAS["mat_joker_" .. self.mat_type .. "s"], {x = pos.x, y = pos.y})
-        pos.x = pos.x + 1
-        if pos.x == 10 then
-            pos.x = 0
-            pos.y = pos.y + 1
-        end
+        mat_mod[self.key] = Sprite(0, 0, G.CARD_W, G.CARD_H, G.ASSET_ATLAS[self.mat_joker_atlas], {x = self.mat_joker_pos.x, y = self.mat_joker_pos.y})
     end,
     delete = function(self)
         SMODS.Consumable.delete(self)
@@ -4373,18 +4368,22 @@ for _, obj in ipairs(mat_mod.objects) do
     }
 end
 
+local pos = {x = 0, y = 0}
+
 for i = 1, #effects["hat"] do
-    effects["hat"][i].mat_type = "hat"
-    effects["hat"][i].atlas = "mat_hats"
-    SMODS["Mat_obj"](effects["hat"][i])
+    for _, obj in ipairs(mat_mod.objects) do
+        effects[obj][i].mat_type = obj
+        effects[obj][i].atlas = "mat_" .. obj .. "s"
+        effects[obj][i].mat_joker_pos = {x = pos.x, y = pos.y}
+        effects[obj][i].mat_joker_atlas = "mat_joker_" .. obj .. "s"
+        SMODS["Mat_obj"](effects[obj][i])
+    end
 
-    effects["head"][i].mat_type = "head"
-    effects["head"][i].atlas = "mat_heads"
-    SMODS["Mat_obj"](effects["head"][i])
-
-    effects["collar"][i].mat_type = "collar"
-    effects["collar"][i].atlas = "mat_collars"
-    SMODS["Mat_obj"](effects["collar"][i])
+    pos.x = pos.x + 1
+    if pos.x == 10 then
+        pos.x = 0
+        pos.y = pos.y + 1
+    end
 end
 
 SMODS.ObjectType({
