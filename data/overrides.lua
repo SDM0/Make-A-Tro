@@ -18,7 +18,7 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
             else
                 vars = Card.generate_UIBox_ability_table({ability = card.ability.extra[obj].ability, config = G.P_CENTERS[card.ability.extra[obj].key].config, bypass_lock = true}, true)
             end
-            localize{type = 'descriptions', set = 'Mat_' .. obj, key = card.ability.extra[obj].key, nodes = mat[obj], vars = vars or specific_vars or {}, AUT = { info = { "I HATE GENERATE_CARD_UI" }}}
+            localize{type = 'descriptions', set = 'Mat_obj', key = card.ability.extra[obj].key, nodes = mat[obj], vars = vars or specific_vars or {}, AUT = { info = { "I HATE GENERATE_CARD_UI" }}}
             ui["mat_" .. obj] = mat[obj]
         end
     end

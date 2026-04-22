@@ -12,6 +12,12 @@ SMODS.ConsumableType {
     default = "c_mat_joker_hat",
 }
 
+local positions = {
+    hat = {x = 0, y = 0},
+    head = {x = 0, y = 0},
+    collar = {x = 0, y = 0}
+}
+
 SMODS["Mat_obj"] = SMODS.Consumable:extend({
     set = 'Mat_obj',
     cost = 4,
@@ -38,6 +44,21 @@ SMODS["Mat_obj"] = SMODS.Consumable:extend({
         end
         return true
     end,
+    inject = function(self)
+        SMODS.Consumable.inject(self)
+
+        local pos = positions[self.mat_type]
+        mat_mod[self.key] = Sprite(0, 0, G.CARD_W, G.CARD_H, G.ASSET_ATLAS["mat_joker_" .. self.mat_type .. "s"], {x = pos.x, y = pos.y})
+        pos.x = pos.x + 1
+        if pos.x == 10 then
+            pos.x = 0
+            pos.y = pos.y + 1
+        end
+    end,
+    delete = function(self)
+        SMODS.Consumable.delete(self)
+        mat_mod[self.key] = nil
+    end,
     set_card_type_badge = function(self, card, badges)
         badges[#badges+1] = create_badge(
             localize('k_mat_' .. self.mat_type),
@@ -51,7 +72,6 @@ SMODS["Mat_obj"] = SMODS.Consumable:extend({
 })
 
 local effects = {}
-local pos_x, pos_y = 0, 0
 
 for _, obj in ipairs(mat_mod.objects) do
     local upp_obj = obj:gsub("^%l", string.upper)
