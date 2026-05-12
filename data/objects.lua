@@ -12,15 +12,24 @@ SMODS.ConsumableType {
     default = "c_mat_joker_hat",
 }
 
-local positions = {
-    hat = {x = 0, y = 0},
-    head = {x = 0, y = 0},
-    collar = {x = 0, y = 0}
-}
+SMODS.ObjectType({
+	key = "Mat_hat",
+	cards = {},
+})
+
+SMODS.ObjectType({
+	key = "Mat_head",
+	cards = {},
+})
+
+SMODS.ObjectType({
+	key = "Mat_collar",
+	cards = {},
+})
 
 SMODS["Mat_obj"] = SMODS.Consumable:extend({
     set = 'Mat_obj',
-    cost = 4,
+    cost = 3,
     rarity = 1,
     mat_type = "hat",
     mat_joker_pos = {x = 0, y = 0},
@@ -48,10 +57,12 @@ SMODS["Mat_obj"] = SMODS.Consumable:extend({
     end,
     inject = function(self)
         SMODS.Consumable.inject(self)
+        SMODS.insert_pool(G.P_CENTER_POOLS['Mat_' .. self.mat_type], self)
         mat_mod[self.key] = Sprite(0, 0, G.CARD_W, G.CARD_H, G.ASSET_ATLAS[self.mat_joker_atlas], {x = self.mat_joker_pos.x, y = self.mat_joker_pos.y})
     end,
     delete = function(self)
         SMODS.Consumable.delete(self)
+        SMODS.remove_pool(G.P_CENTER_POOLS['Mat_' .. self.mat_type], self.key)
         mat_mod[self.key] = nil
     end,
     set_card_type_badge = function(self, card, badges)
@@ -63,13 +74,19 @@ SMODS["Mat_obj"] = SMODS.Consumable:extend({
              badges[#badges+1] = create_badge(SMODS.Rarity:get_rarity_badge(card.config.center.rarity), G.C.RARITY[card.config.center.rarity], nil, 1.0)
          end
     end,
-    atlas = "mat_hats"
+    atlas = "mat_hats_cards"
 })
 
 local effects = {}
 
 for _, obj in ipairs(mat_mod.objects) do
     local upp_obj = obj:gsub("^%l", string.upper)
+
+    SMODS.Atlas{
+        key = "mat_" .. obj .. "s_cards",
+        path = "mat_" .. obj .. "s_cards.png",
+        px = 71, py = 95
+    }
 
     SMODS.Atlas{
         key = "mat_" .. obj .. "s",
@@ -85,7 +102,7 @@ for _, obj in ipairs(mat_mod.objects) do
 
     SMODS.UndiscoveredSprite{
         key = 'Mat_' .. obj,
-        atlas = "mat_" .. obj .. "s",
+        atlas = "mat_" .. obj .. "s_cards",
         pos = {x = 1, y = 0}
     }
 
@@ -94,7 +111,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = 'joker_' .. obj,
             name = 'Joker ' .. upp_obj,
-            soul_pos = {x = 0, y = 1},
             rarity = 1,
             config = {extra = {mult = 2}},
             loc_vars = function(self, info_queue, card)
@@ -112,7 +128,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = 'greedy_' .. obj,
             name = 'Greedy '  .. upp_obj,
-            soul_pos = {x = 1, y = 1},
             rarity = 1,
             config = {extra = {s_mult = 2, suit = 'Diamonds'}},
             loc_vars = function(self, info_queue, card)
@@ -131,7 +146,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = 'lusty_' .. obj,
             name = 'Lusty ' .. upp_obj,
-            soul_pos = {x = 2, y = 1},
             rarity = 1,
             config = {extra = {s_mult = 2, suit = 'Hearts'}},
             loc_vars = function(self, info_queue, card)
@@ -150,7 +164,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = 'wrathful_' .. obj,
             name = 'Wrathful ' .. upp_obj,
-            soul_pos = {x = 3, y = 1},
             rarity = 1,
             config = {extra = {s_mult = 2, suit = 'Spades'}},
             loc_vars = function(self, info_queue, card)
@@ -169,7 +182,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = 'gluttonous_' .. obj,
             name = 'Gluttonous ' .. upp_obj,
-            soul_pos = {x = 4, y = 1},
             rarity = 1,
             config = {extra = {s_mult = 2, suit = 'Clubs'}},
             loc_vars = function(self, info_queue, card)
@@ -188,7 +200,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = 'jolly_' .. obj,
             name = 'Jolly ' .. upp_obj,
-            soul_pos = {x = 5, y = 1},
             rarity = 1,
             config = {extra = {t_mult= 4, type = 'Pair'}},
             loc_vars = function(self, info_queue, card)
@@ -206,7 +217,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = 'zany_' .. obj,
             name = 'Zany ' .. upp_obj,
-            soul_pos = {x = 6, y = 1},
             rarity = 1,
             config = {extra = {t_mult= 6, type = 'Three of a Kind'}},
             loc_vars = function(self, info_queue, card)
@@ -224,7 +234,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = 'mad_' .. obj,
             name = 'Mad ' .. upp_obj,
-            soul_pos = {x = 7, y = 1},
             rarity = 1,
             config = {extra = {t_mult= 5, type = 'Two Pair'}},
             loc_vars = function(self, info_queue, card)
@@ -242,7 +251,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = 'crazy_' .. obj,
             name = 'Crazy ' .. upp_obj,
-            soul_pos = {x = 8, y = 1},
             rarity = 1,
             config = {extra = {t_mult= 6, type = 'Straight'}},
             loc_vars = function(self, info_queue, card)
@@ -260,7 +268,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = 'droll_' .. obj,
             name = 'Droll ' .. upp_obj,
-            soul_pos = {x = 9, y = 1},
             rarity = 1,
             config = {extra = {t_mult= 5, type = 'Flush'}},
             loc_vars = function(self, info_queue, card)
@@ -278,7 +285,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = 'sly_' .. obj,
             name = 'Sly ' .. upp_obj,
-            soul_pos = {x = 0, y = 2},
             rarity = 1,
             config = {extra = {t_chips = 25, type = 'Pair'}},
             loc_vars = function(self, info_queue, card)
@@ -296,7 +302,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = 'wily_' .. obj,
             name = 'Wily ' .. upp_obj,
-            soul_pos = {x = 1, y = 2},
             rarity = 1,
             config = {extra = {t_chips = 50, type = 'Three of a Kind'}},
             loc_vars = function(self, info_queue, card)
@@ -314,7 +319,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = 'clever_' .. obj,
             name = 'Clever ' .. upp_obj,
-            soul_pos = {x = 2, y = 2},
             rarity = 1,
             config = {extra = {t_chips = 40, type = 'Two Pair'}},
             loc_vars = function(self, info_queue, card)
@@ -332,7 +336,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = 'devious_' .. obj,
             name = 'Devious ' .. upp_obj,
-            soul_pos = {x = 3, y = 2},
             rarity = 1,
             config = {extra = {t_chips = 50, type = 'Straight'}},
             loc_vars = function(self, info_queue, card)
@@ -350,7 +353,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = 'crafty_' .. obj,
             name = 'Crafty ' .. upp_obj,
-            soul_pos = {x = 4, y = 2},
             rarity = 1,
             config = {extra = {t_chips = 40, type = 'Flush'}},
             loc_vars = function(self, info_queue, card)
@@ -368,8 +370,8 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = 'half_' .. obj,
             name = 'Half ' .. upp_obj,
-            soul_pos = {x = 5, y = 2},
             rarity = 1,
+            pos = {x = 2, y = 0},
             config = {extra = {mult = 7, size = 3}},
             loc_vars = function(self, info_queue, card)
                 return {vars = {card.ability.extra.mult, card.ability.extra.size}}
@@ -386,8 +388,8 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = 'stencil_' .. obj,
             name = 'Stencil ' .. upp_obj,
-            soul_pos = {x = 6, y = 2},
             rarity = 2,
+            pos = {x = 3, y = 0},
             config = {extra = {xmult = 0.5}},
             loc_vars = function(self, info_queue, card)
                 return {vars = {card.ability.extra.xmult, G.jokers and math.max(1, 1 + ((G.jokers.config.card_limit - #G.jokers.cards) * card.ability.extra.xmult)) or 1}}
@@ -404,7 +406,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = 'four_fingers_' .. obj,
             name = 'Four Fingers ' .. upp_obj,
-            soul_pos = {x = 7, y = 2},
             rarity = 2,
             config = {extra = {mult = 6}},
             loc_vars = function(self, info_queue, card)
@@ -425,7 +426,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = 'mime_' .. obj,
             name = 'Mime ' .. upp_obj,
-            soul_pos = {x = 8, y = 2},
             rarity = 3,
             config = {extra = {repetitions = 1}},
             loc_vars = function(self, info_queue, card)
@@ -443,7 +443,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = 'credit_card_' .. obj,
             name = 'Credit Card ' .. upp_obj,
-            soul_pos = {x = 9, y = 2},
             rarity = 1,
             config = {extra = {threshold = 7}},
             loc_vars = function(self, info_queue, card)
@@ -460,7 +459,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = 'ceremonial_dagger_' .. obj,
             name = 'Ceremonial Dagger ' .. upp_obj,
-            soul_pos = {x = 0, y = 3},
             rarity = 2,
             config = {extra = {mult = 0}},
             loc_vars = function(self, info_queue, card)
@@ -502,7 +500,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "banner_" .. obj,
             name = 'Banner ' .. upp_obj,
-            soul_pos = {x = 1, y = 3},
             rarity = 1,
             config = {extra = {chips = 15}},
             loc_vars = function(self, info_queue, card)
@@ -520,7 +517,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "mystic_summit_" .. obj,
             name = 'Mystic Summit ' .. upp_obj,
-            soul_pos = {x = 2, y = 3},
             rarity = 1,
             config = {extra = {mult = 8, d_remaining = 0 }},
             loc_vars = function(self, info_queue, card)
@@ -538,7 +534,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "marble_" .. obj,
             name = 'Marble ' .. upp_obj,
-            soul_pos = {x = 3, y = 3},
             rarity = 2,
             config = {extra = {spawn = false}},
             loc_vars = function(self, info_queue, card)
@@ -589,7 +584,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "loyalty_card_" .. obj,
             name = 'Loyalty Card ' .. upp_obj,
-            soul_pos = {x = 4, y = 3},
             rarity = 2,
             config = {extra = {xmult = 2, every = 5, loyalty_remaining = 5}},
             loc_vars = function(self, info_queue, card)
@@ -626,7 +620,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "8_ball_" .. obj,
             name = '8 Ball ' .. upp_obj,
-            soul_pos = {x = 5, y = 3},
             rarity = 1,
             config = {extra = {odds = 8}},
             loc_vars = function(self, info_queue, card)
@@ -661,8 +654,8 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "misprint_" .. obj,
             name = 'Misprint ' .. upp_obj,
-            soul_pos = {x = 6, y = 3},
             rarity = 1,
+            pos = {x = 4, y = 0},
             config = {extra = {max = 23, min = 0}},
             loc_vars = function(self, info_queue, card)
                 local r_mults = {}
@@ -707,7 +700,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "dusk_" .. obj,
             name = "Dusk " .. upp_obj,
-            soul_pos = {x = 7, y = 3},
             rarity = 3,
             config = {extra = {repetitions = 1}},
             mat_calculate_obj = function(self, card, context)
@@ -723,7 +715,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "raised_fist_" .. obj,
             name = "Raised Fist " .. upp_obj,
-            soul_pos = {x = 8, y = 3},
             rarity = 1,
             mat_calculate_obj = function(self, card, context)
                 if context.individual and context.cardarea == G.hand and not context.end_of_round then
@@ -756,7 +747,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "chaos_" .. obj,
             name = "Chaos " .. upp_obj,
-            soul_pos = {x = 9, y = 3},
             rarity = 2,
             config = {extra = {rerolls = 1}},
             loc_vars = function(self, info_queue, card)
@@ -774,7 +764,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "fibonacci_" .. obj,
             name = "Fibonacci " .. upp_obj,
-            soul_pos = {x = 0, y = 4},
             rarity = 2,
             config = {extra = {mult = 4}},
             loc_vars = function(self, info_queue, card)
@@ -799,7 +788,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "steel_" .. obj,
             name = "Steel " .. upp_obj,
-            soul_pos = {x = 1, y = 4},
             rarity = 2,
             config = {extra = {xmult = 0.1}},
             loc_vars = function(self, info_queue, card)
@@ -838,7 +826,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "scary_face_" .. obj,
             name = "Scary Face " .. upp_obj,
-            soul_pos = {x = 2, y = 4},
             rarity = 1,
             config = {extra = {chips = 15}},
             loc_vars = function(self, info_queue, card)
@@ -857,7 +844,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "abstract_" .. obj,
             name = "Abstract " .. upp_obj,
-            soul_pos = {x = 3, y = 4},
             rarity = 1,
             config = {extra = {mult = 2}},
             loc_vars = function(self, info_queue, card)
@@ -880,7 +866,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "delayed_grat_" .. obj,
             name = "Delayed Gratification " .. upp_obj,
-            soul_pos = {x = 4, y = 4},
             rarity = 1,
             config = {extra = {dollars = 1}},
             loc_vars = function(self, info_queue, card)
@@ -896,7 +881,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "hack_" .. obj,
             name = "Hack " .. upp_obj,
-            soul_pos = {x = 5, y = 4},
             rarity = 3,
             config = {extra = {repetitions = 1}},
             mat_calculate_obj = function(self, card, context)
@@ -917,7 +901,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "pareidolia_" .. obj,
             name = "Pareidolia " .. upp_obj,
-            soul_pos = {x = 6, y = 4},
             rarity = 2,
             config = {extra = {mult = 5}},
             loc_vars = function(self, info_queue, card)
@@ -936,7 +919,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "gros_michel_" .. obj,
             name = "Gros Michel " .. upp_obj,
-            soul_pos = {x = 7, y = 4},
             rarity = 1,
             config = {extra = {odds = 11, mult = 8}},
             loc_vars = function(self, info_queue, card)
@@ -992,7 +974,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "even_steven_" .. obj,
             name = "Even Steven " .. upp_obj,
-            soul_pos = {x = 8, y = 4},
             rarity = 1,
             config = {extra = {mult = 2}},
             loc_vars = function(self, info_queue, card)
@@ -1015,7 +996,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "odd_todd_" .. obj,
             name = "Odd Todd " .. upp_obj,
-            soul_pos = {x = 9, y = 4},
             rarity = 1,
             config = {extra = {chips = 15}},
             loc_vars = function(self, info_queue, card)
@@ -1039,7 +1019,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "scholar_" .. obj,
             name = "Scholar " .. upp_obj,
-            soul_pos = {x = 0, y = 5},
             rarity = 1,
             config = {extra = {mult = 2, chips = 10}},
             loc_vars = function(self, info_queue, card)
@@ -1059,7 +1038,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "business_" .. obj,
             name = "Business " .. upp_obj,
-            soul_pos = {x = 1, y = 5},
             rarity = 1,
             config = {extra = {odds = 2, dollars = 1}},
             loc_vars = function(self, info_queue, card)
@@ -1089,7 +1067,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "supernova_" .. obj,
             name = "Supernova " .. upp_obj,
-            soul_pos = {x = 2, y = 5},
             rarity = 1,
             mat_calculate_obj = function(self, card, context)
                 if context.joker_main then
@@ -1107,7 +1084,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "ride_the_bus_" .. obj,
             name = "Ride The Bus " .. upp_obj,
-            soul_pos = {x = 3, y = 5},
             rarity = 1,
             config = {extra = {mult_gain = 1, mult = 0}},
             loc_vars = function(self, info_queue, card)
@@ -1146,7 +1122,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "space_" .. obj,
             name = "Space " .. upp_obj,
-            soul_pos = {x = 4, y = 5},
             rarity = 2,
             config = {extra = {odds = 7}},
             loc_vars = function(self, info_queue, card)
@@ -1167,7 +1142,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "egg_" .. obj,
             name = "Egg " .. upp_obj,
-            soul_pos = {x = 4, y = 5},
             rarity = 1,
             config = {extra = {price = 2}},
             loc_vars = function(self, info_queue, card)
@@ -1188,7 +1162,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "burglar_" .. obj,
             name = "Burglar " .. upp_obj,
-            soul_pos = {x = 5, y = 5},
             rarity = 2,
             config = {extra = {hands = 2}},
             loc_vars = function(self, info_queue, card)
@@ -1218,7 +1191,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "blackboard_" .. obj,
             name = "Blackboard " .. upp_obj,
-            soul_pos = {x = 6, y = 5},
             rarity = 2,
             config = {extra = {xmult = 1.75}},
             loc_vars = function(self, info_queue, card)
@@ -1246,7 +1218,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "runner_" .. obj,
             name = "Runner " .. upp_obj,
-            soul_pos = {x = 7, y = 5},
             rarity = 1,
             config = {extra = {chips = 0, chip_mod = 8}},
             loc_vars = function(self, info_queue, card)
@@ -1272,7 +1243,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "ice_cream_" .. obj,
             name = "Ice Cream " .. upp_obj,
-            soul_pos = {x = 8, y = 5},
             rarity = 1,
             config = {extra = {chips = 50, chip_mod = 2}},
             loc_vars = function(self, info_queue, card)
@@ -1326,7 +1296,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "dna_" .. obj,
             name = "DNA " .. upp_obj,
-            soul_pos = {x = 9, y = 5},
             rarity = 3,
             config = {extra = {copy = 1}},
             loc_vars = function(self, info_queue, card)
@@ -1373,7 +1342,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "splash_" .. obj,
             name = "Splash " .. upp_obj,
-            soul_pos = {x = 0, y = 6},
             rarity = 1,
             config = {extra = {chips = 20}},
             loc_vars = function(self, info_queue, card)
@@ -1401,7 +1369,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "blue_" .. obj,
             name = "Blue " .. upp_obj,
-            soul_pos = {x = 1, y = 6},
             rarity = 1,
             config = {extra = {chips = 1}},
             loc_vars = function(self, info_queue, card)
@@ -1420,7 +1387,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "sixth_sense_" .. obj,
             name = "Sixth Sense " .. upp_obj,
-            soul_pos = {x = 2, y = 6},
             rarity = 2,
             mat_calculate_obj = function(self, card, context)
                 if context.destroy_card and not context.blueprint then
@@ -1455,7 +1421,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "constellation_" .. obj,
             name = "Constellation " .. upp_obj,
-            soul_pos = {x = 3, y = 6},
             rarity = 2,
             config = {extra = {Xmult = 1, Xmult_mod = 0.05}},
             loc_vars = function(self, info_queue, card)
@@ -1480,7 +1445,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "hiker_" .. obj,
             name = "Hiker " .. upp_obj,
-            soul_pos = {x = 4, y = 6},
             rarity = 2,
             config = {extra = {chips = 3}},
             loc_vars = function(self, info_queue, card)
@@ -1502,7 +1466,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "faceless_" .. obj,
             name = "Faceless " .. upp_obj,
-            soul_pos = {x = 5, y = 6},
             rarity = 1,
             config = {extra = {dollars = 3, faces = 3}},
             loc_vars = function(self, info_queue, card)
@@ -1536,7 +1499,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "green_" .. obj,
             name = "Green " .. upp_obj,
-            soul_pos = {x = 6, y = 6},
             rarity = 2,
             config = {extra = {hand_add = 1, discard_sub = 1, mult = 0}},
             loc_vars = function(self, info_queue, card)
@@ -1571,7 +1533,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "superposition_" .. obj,
             name = "Superposition " .. upp_obj,
-            soul_pos = {x = 7, y = 6},
             rarity = 2,
             mat_calculate_obj = function(self, card, context)
                 if context.joker_main and next(context.poker_hands["Straight"]) and
@@ -1608,7 +1569,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "todo_list_" .. obj,
             name = "To Do List " .. upp_obj,
-            soul_pos = {x = 8, y = 6},
             rarity = 1,
             config = {extra = {dollars = 2, poker_hand = 'High Card'}},
             loc_vars = function(self, info_queue, card)
@@ -1658,7 +1618,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "cavendish_" .. obj,
             name = "Cavendish " .. upp_obj,
-            soul_pos = {x = 9, y = 6},
             rarity = 1,
             config = {extra = {odds = 2000, Xmult = 1.75}},
             loc_vars = function(self, info_queue, card)
@@ -1713,7 +1672,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "card_sharp_" .. obj,
             name = "Card Sharp " .. upp_obj,
-            soul_pos = {x = 0, y = 7},
             rarity = 2,
             config = {extra = {Xmult = 1.75}},
             loc_vars = function(self, info_queue, card)
@@ -1732,7 +1690,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "red_card_" .. obj,
             name = "Red Card " .. upp_obj,
-            soul_pos = {x = 1, y = 7},
             rarity = 1,
             config = {extra = {mult_gain = 2, mult = 0}},
             loc_vars = function(self, info_queue, card)
@@ -1758,7 +1715,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "madness_" .. obj,
             name = "Madness " .. upp_obj,
-            soul_pos = {x = 1, y = 7},
             rarity = 2,
             config = {extra = {xmult_gain = 0.25, xmult = 1}},
             loc_vars = function(self, info_queue, card)
@@ -1800,7 +1756,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "square_" .. obj,
             name = "Square " .. upp_obj,
-            soul_pos = {x = 2, y = 7},
             rarity = 1,
             pixel_size = {h = 71 },
             config = {extra = {chips = 0, chip_mod = 2}},
@@ -1827,7 +1782,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "seance_" .. obj,
             name = "Séance " .. upp_obj,
-            soul_pos = {x = 3, y = 7},
             rarity = 2,
             config = {extra = {poker_hand = 'Straight Flush'}},
             loc_vars = function(self, info_queue, card)
@@ -1859,7 +1813,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "riff_raff_" .. obj,
             name = "Riff-Raff " .. upp_obj,
-            soul_pos = {x = 4, y = 7},
             rarity = 1,
             config = {extra = {creates = 1}},
             loc_vars = function(self, info_queue, card)
@@ -1894,7 +1847,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "vampire_" .. obj,
             name = "Vampire " .. upp_obj,
-            soul_pos = {x = 5, y = 7},
             rarity = 2,
             config = {extra = {Xmult_gain = 0.1, Xmult = 1}},
             loc_vars = function(self, info_queue, card)
@@ -1945,7 +1897,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "shortcut_" .. obj,
             name = "Shortcut " .. upp_obj,
-            soul_pos = {x = 6, y = 7},
             rarity = 2,
             config = {extra = {mult = 0, mult_mod = 2}},
             loc_vars = function(self, info_queue, card)
@@ -2007,7 +1958,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "vagabond_" .. obj,
             name = "Vagaond " .. upp_obj,
-            soul_pos = {x = 8, y = 7},
             rarity = 3,
             config = {extra = {dollars = 4}},
             loc_vars = function(self, info_queue, card)
@@ -2040,7 +1990,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "baron_" .. obj,
             name = "Baron " .. upp_obj,
-            soul_pos = {x = 9, y = 7},
             rarity = 3,
             config = {extra = {xmult = 1.25}},
             loc_vars = function(self, info_queue, card)
@@ -2066,7 +2015,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "cloud_9_" .. obj,
             name = "Cloud 9 " .. upp_obj,
-            soul_pos = {x = 0, y = 8},
             rarity = 2,
             config = {extra = {dollars = 1}},
             loc_vars = function(self, info_queue, card)
@@ -2091,7 +2039,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "rocket_" .. obj,
             name = "Rocket " .. upp_obj,
-            soul_pos = {x = 1, y = 8},
             rarity = 2,
             config = {extra = {dollars = 1, increase = 1}},
             loc_vars = function(self, info_queue, card)
@@ -2115,7 +2062,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "obelisk_" .. obj,
             name = "Obelisk " .. upp_obj,
-            soul_pos = {x = 2, y = 8},
             rarity = 3,
             config = {extra = {Xmult_gain = 0.1, Xmult = 1}},
             loc_vars = function(self, info_queue, card)
@@ -2154,7 +2100,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "midas_mask_" .. obj,
             name = "Midas " .. upp_obj,
-            soul_pos = {x = 3, y = 8},
             rarity = 2,
             loc_vars = function(self, info_queue, card)
                 info_queue[#info_queue+1] = G.P_CENTERS["j_midas_mask"]
@@ -2190,7 +2135,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "luchador_" .. obj,
             name = "Luchador " .. upp_obj,
-            soul_pos = {x = 3, y = 8},
             rarity = 2,
             config = { extra = { dollars = 5 } },
             loc_vars = function(self, info_queue, card)
@@ -2242,7 +2186,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "photograph_" .. obj,
             name = "Photograph " .. upp_obj,
-            soul_pos = {x = 4, y = 8},
             rarity = 1,
             -- TODO: appropriate size for photograph consumable size and others with diff pixel_size
             pixel_size = {h = 95 / 1.2 },
@@ -2272,7 +2215,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "gift_" .. obj,
             name = "Gift " .. upp_obj,
-            soul_pos = {x = 5, y = 8},
             rarity = 2,
             config = {extra = {sell_value = 1}},
             loc_vars = function(self, info_queue, card)
@@ -2301,7 +2243,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "turtle_bean_" .. obj,
             name = "Turtle " .. upp_obj,
-            soul_pos = {x = 6, y = 8},
             rarity = 2,
             config = {extra = {h_size = 3, h_mod = 1}},
             loc_vars = function(self, info_queue, card)
@@ -2357,7 +2298,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "erosion_" .. obj,
             name = "Erosion " .. upp_obj,
-            soul_pos = {x = 7, y = 8},
             rarity = 2,
             config = {extra = {mult = 2}},
             loc_vars = function(self, info_queue, card)
@@ -2376,7 +2316,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "reserved_parking_" .. obj,
             name = "Reserved " .. upp_obj,
-            soul_pos = {x = 8, y = 8},
             rarity = 1,
             config = {extra = {odds = 4, dollars = 1}},
             loc_vars = function(self, info_queue, card)
@@ -2415,7 +2354,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "mail_" .. obj,
             name = "Mail " .. upp_obj,
-            soul_pos = {x = 9, y = 8},
             rarity = 1,
             config = {extra = {dollars = 5}},
             loc_vars = function(self, info_queue, card)
@@ -2444,7 +2382,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "to_the_moon_" .. obj,
             name = "To The Moon " .. upp_obj,
-            soul_pos = {x = 0, y = 9},
             rarity = 2,
             config = {extra = {interest = 1}},
             loc_vars = function(self, info_queue, card)
@@ -2462,7 +2399,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "hallucination_" .. obj,
             name = "Hallucination " .. upp_obj,
-            soul_pos = {x = 1, y = 9},
             rarity = 1,
             config = {extra = {odds = 4}},
             loc_vars = function(self, info_queue, card)
@@ -2498,7 +2434,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "fortune_teller_" .. obj,
             name = "Fortune Teller " .. upp_obj,
-            soul_pos = {x = 2, y = 9},
             rarity = 1,
             config = {extra = {mult = 1}},
             loc_vars = function(self, info_queue, card)
@@ -2526,7 +2461,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "juggler_" .. obj,
             name = "Juggler " .. upp_obj,
-            soul_pos = {x = 3, y = 9},
             rarity = 2,
             config = {extra = {h_size = 1}},
             loc_vars = function(self, info_queue, card)
@@ -2544,7 +2478,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "drunkard_" .. obj,
             name = "Drunkard " .. upp_obj,
-            soul_pos = {x = 4, y = 9},
             rarity = 2,
             config = {extra = {d_size = 1}},
             loc_vars = function(self, info_queue, card)
@@ -2564,7 +2497,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "stone_" .. obj,
             name = "Stone " .. upp_obj,
-            soul_pos = {x = 5, y = 9},
             rarity = 2,
             config = {extra = {chips = 18}},
             loc_vars = function(self, info_queue, card)
@@ -2603,7 +2535,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "golden_" .. obj,
             name = "Golden " .. upp_obj,
-            soul_pos = {x = 6, y = 9},
             rarity = 1,
             config = {extra = {dollars = 2}},
             loc_vars = function(self, info_queue, card)
@@ -2618,7 +2549,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "lucky_cat_" .. obj,
             name = "Lucky Cat " .. upp_obj,
-            soul_pos = {x = 7, y = 9},
             rarity = 2,
             config = {extra = {Xmult_gain = 0.1, Xmult = 1}},
             loc_vars = function(self, info_queue, card)
@@ -2655,7 +2585,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "baseball_" .. obj,
             name = "Baseball " .. upp_obj,
-            soul_pos = {x = 8, y = 9},
             rarity = 3,
             config = {extra = {xmult = 1.25}},
             loc_vars = function(self, info_queue, card)
@@ -2674,7 +2603,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "bull_" .. obj,
             name = "Bull " .. upp_obj,
-            soul_pos = {x = 9, y = 9},
             rarity = 2,
             config = {extra = {chips = 1}},
             loc_vars = function(self, info_queue, card)
@@ -2693,7 +2621,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "diet_cola_" .. obj,
             name = "Diet Cola " .. upp_obj,
-            soul_pos = {x = 0, y = 10},
             rarity = 2,
             loc_vars = function(self, info_queue, card)
                 info_queue[#info_queue + 1] = {key = 'tag_double', set = 'Tag' }
@@ -2723,7 +2650,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "trading_" .. obj,
             name = "Trading " .. upp_obj,
-            soul_pos = {x = 1, y = 10},
             rarity = 2,
             config = {extra = {dollars = 2}},
             loc_vars = function(self, info_queue, card)
@@ -2749,7 +2675,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "flash_" .. obj,
             name = "" .. upp_obj,
-            soul_pos = {x = 2, y = 10},
             rarity = 2,
             config = {extra = {mult_gain = 1, mult = 0}},
             loc_vars = function(self, info_queue, card)
@@ -2775,7 +2700,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "popcorn_" .. obj,
             name = "Popcorn " .. upp_obj,
-            soul_pos = {x = 3, y = 10},
             rarity = 1,
             config = {extra = {mult_loss = 2, mult = 10}},
             loc_vars = function(self, info_queue, card)
@@ -2829,7 +2753,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "trousers_" .. obj,
             name = "Trousers " .. upp_obj,
-            soul_pos = {x = 4, y = 10},
             rarity = 2,
             config = {extra = {mult_gain = 1, mult = 0}},
             loc_vars = function(self, info_queue, card)
@@ -2855,7 +2778,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "ancient_" .. obj,
             name = "Ancient " .. upp_obj,
-            soul_pos = {x = 5, y = 10},
             rarity = 3,
             config = {extra = {xmult = 1.25}},
             loc_vars = function(self, info_queue, card)
@@ -2875,7 +2797,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "ramen_" .. obj,
             name = "Ramen " .. upp_obj,
-            soul_pos = {x = 6, y = 10},
             rarity = 2,
             config = {extra = {Xmult_loss = 0.005, Xmult = 1.5}},
             loc_vars = function(self, info_queue, card)
@@ -2928,7 +2849,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "walkie_talkie_" .. obj,
             name = "Walkie Talkie" .. upp_obj,
-            soul_pos = {x = 7, y = 10},
             rarity = 1,
             config = {extra = {chips = 5, mult = 2}},
             loc_vars = function(self, info_queue, card)
@@ -2949,7 +2869,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "selzer_" .. obj,
             name = "Selzer " .. upp_obj,
-            soul_pos = {x = 8, y = 10},
             rarity = 2,
             config = {extra = {hands_left = 5}},
             loc_vars = function(self, info_queue, card)
@@ -3003,7 +2922,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "castle_" .. obj,
             name = "Castle " .. upp_obj,
-            soul_pos = {x = 9, y = 10},
             rarity = 2,
             config = {extra = {chips = 0, chip_mod = 2}},
             loc_vars = function(self, info_queue, card)
@@ -3031,7 +2949,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "smiley_" .. obj,
             name = "Smiley " .. upp_obj,
-            soul_pos = {x = 0, y = 11},
             rarity = 1,
             config = {extra = {mult = 2}},
             loc_vars = function(self, info_queue, card)
@@ -3050,7 +2967,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "campfire_" .. obj,
             name = "Campfire " .. upp_obj,
-            soul_pos = {x = 1, y = 11},
             rarity = 3,
             config = {extra = {xmult_gain = 0.1, xmult = 1}},
             loc_vars = function(self, info_queue, card)
@@ -3086,7 +3002,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "ticket_" .. obj,
             name = "Golden Ticket " .. upp_obj,
-            soul_pos = {x = 2, y = 11},
             rarity = 1,
             config = {extra = {dollars = 2}},
             loc_vars = function(self, info_queue, card)
@@ -3124,7 +3039,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "mr_bones_" .. obj,
             name = "Mr. Bones " .. upp_obj,
-            soul_pos = {x = 3, y = 11},
             rarity = 3,
             mat_calculate_obj = function(self, card, context)
                 if context.end_of_round and context.game_over and context.main_eval then
@@ -3152,7 +3066,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "acrobat_" .. obj,
             name = "Acrobat " .. upp_obj,
-            soul_pos = {x = 4, y = 11},
             rarity = 2,
             config = {extra = {xmult = 1.75}},
             loc_vars = function(self, info_queue, card)
@@ -3171,7 +3084,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "sock_and_buskin_" .. obj,
             name = "Sock and Buskin " .. upp_obj,
-            soul_pos = {x = 5, y = 11},
             rarity = 3,
             config = {extra = {repetitions = 1}},
             mat_calculate_obj = function(self, card, context)
@@ -3187,7 +3099,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "swashbuckler_" .. obj,
             name = "Swashbuckler " .. upp_obj,
-            soul_pos = {x = 6, y = 11},
             rarity = 1,
             config = {extra = {mult = 1}},
             loc_vars = function(self, info_queue, card)
@@ -3220,7 +3131,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "troubadour_" .. obj,
             name = "Troubadour " .. upp_obj,
-            soul_pos = {x = 7, y = 11},
             rarity = 2,
             config = {extra = {h_size = 1, h_plays = -1}},
             loc_vars = function(self, info_queue, card)
@@ -3240,7 +3150,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "certificate_" .. obj,
             name = "Certificate " .. upp_obj,
-            soul_pos = {x = 8, y = 11},
             rarity = 3,
             mat_calculate_obj = function(self, card, context)
                 if context.first_hand_drawn then
@@ -3277,7 +3186,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "smeared_" .. obj,
             name = "Smeared " .. upp_obj,
-            soul_pos = {x = 9, y = 11},
             rarity = 2,
             config = {extra = {Xmult = 1.75}},
             loc_vars = function(self, info_queue, card)
@@ -3307,7 +3215,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "throwback_" .. obj,
             name = "Throwback " .. upp_obj,
-            soul_pos = {x = 0, y = 12},
             rarity = 2,
             config = {extra = {xmult = 0.1}},
             loc_vars = function(self, info_queue, card)
@@ -3331,7 +3238,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "hanging_chad_" .. obj,
             name = "Hanging Chad " .. upp_obj,
-            soul_pos = {x = 1, y = 12},
             rarity = 1,
             config = {extra = {repetitions = 1}},
             loc_vars = function(self, info_queue, card)
@@ -3350,7 +3256,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "rough_gem_" .. obj,
             name = "Rough Gem " .. upp_obj,
-            soul_pos = {x = 2, y = 12},
             rarity = 2,
             config = {extra = {dollars = 1}},
             loc_vars = function(self, info_queue, card)
@@ -3378,7 +3283,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "bloodstone_" .. obj,
             name = "Bloodstone " .. upp_obj,
-            soul_pos = {x = 3, y = 12},
             rarity = 2,
             config = {extra = {odds = 4, Xmult = 1.5}},
             loc_vars = function(self, info_queue, card)
@@ -3399,7 +3303,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "arrowhead_" .. obj,
             name = "Arrowhead " .. upp_obj,
-            soul_pos = {x = 4, y = 12},
             rarity = 2,
             config = {extra = {chips = 25}},
             loc_vars = function(self, info_queue, card)
@@ -3418,7 +3321,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "onyx_agate_" .. obj,
             name = "Onyx Agate " .. upp_obj,
-            soul_pos = {x = 5, y = 12},
             rarity = 2,
             config = {extra = {mult = 4}},
             loc_vars = function(self, info_queue, card)
@@ -3437,7 +3339,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "glass_" .. obj,
             name = "Glass " .. upp_obj,
-            soul_pos = {x = 6, y = 12},
             rarity = 2,
             config = {extra = {Xmult_gain = 0.35, Xmult = 1}},
             loc_vars = function(self, info_queue, card)
@@ -3508,7 +3409,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "showman_" .. obj,
             name = "Showman " .. upp_obj,
-            soul_pos = {x = 7, y = 12},
             rarity = 2,
             config = {extra = {xmult = 1.5}},
             loc_vars = function(self, info_queue, card)
@@ -3536,7 +3436,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "flower_pot_" .. obj,
             name = "Flower Pot " .. upp_obj,
-            soul_pos = {x = 8, y = 12},
             rarity = 2,
             config = {extra = {Xmult = 1.75}},
             loc_vars = function(self, info_queue, card)
@@ -3592,7 +3491,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "blueprint_" .. obj,
             name = "Blueprint " .. upp_obj,
-            soul_pos = {x = 9, y = 12},
             rarity = 3,
             loc_vars = function(self, info_queue, card)
                 local other_joker
@@ -3631,7 +3529,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "wee_" .. obj,
             name = "Wee " .. upp_obj,
-            soul_pos = {x = 0, y = 13},
             rarity = 3,
             display_size = {w = 71 * 0.7, h = 95 * 0.7 },
             config = {extra = {chips = 0, chip_mod = 4}},
@@ -3660,7 +3557,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "merry_andy_" .. obj,
             name = "Merry Andy " .. upp_obj,
-            soul_pos = {x = 1, y = 13},
             rarity = 2,
             config = {extra = {d_size = 2, h_size = -1}},
             loc_vars = function(self, info_queue, card)
@@ -3682,7 +3578,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "oops_" .. obj,
             name = "" .. upp_obj,
-            soul_pos = {x = 2, y = 13},
             rarity = 2,
             mat_calculate_obj = function(self, card, context)
                 if context.mod_probability then
@@ -3698,7 +3593,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "idol_" .. obj,
             name = "Idol " .. upp_obj,
-            soul_pos = {x = 3, y = 13},
             rarity = 2,
             config = {extra = {xmult = 1.5}},
             loc_vars = function(self, info_queue, card)
@@ -3720,7 +3614,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "seeing_double_" .. obj,
             name = "Seeing Double " .. upp_obj,
-            soul_pos = {x = 4, y = 13},
             rarity = 2,
             config = {extra = {xmult = 1.5}},
             loc_vars = function(self, info_queue, card)
@@ -3739,7 +3632,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "matador_" .. obj,
             name = "Matador " .. upp_obj,
-            soul_pos = {x = 5, y = 13},
             rarity = 2,
             config = {extra = {dollars = 4}},
             loc_vars = function(self, info_queue, card)
@@ -3769,7 +3661,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "hit_the_road_" .. obj,
             name = "Hit The Road " .. upp_obj,
-            soul_pos = {x = 6, y = 13},
             rarity = 3,
             config = {extra = {xmult_gain = 0.25, xmult = 1}},
             loc_vars = function(self, info_queue, card)
@@ -3804,7 +3695,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "duo_" .. obj,
             name = "Duo " .. upp_obj,
-            soul_pos = {x = 7, y = 13},
             rarity = 3,
             config = {extra = {Xmult = 1.5, type = 'Pair'}},
             loc_vars = function(self, info_queue, card)
@@ -3823,7 +3713,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "trio_" .. obj,
             name = "Trio " .. upp_obj,
-            soul_pos = {x = 8, y = 13},
             rarity = 3,
             config = {extra = {Xmult = 1.75, type = 'Three of a Kind'}},
             loc_vars = function(self, info_queue, card)
@@ -3842,7 +3731,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "family_" .. obj,
             name = "Family " .. upp_obj,
-            soul_pos = {x = 9, y = 13},
             rarity = 3,
             config = {extra = {Xmult = 2, type = 'Four of a Kind'}},
             loc_vars = function(self, info_queue, card)
@@ -3861,7 +3749,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "order_" .. obj,
             name = "Order " .. upp_obj,
-            soul_pos = {x = 0, y = 14},
             rarity = 3,
             config = {extra = {Xmult = 3, type = 'Straight'}},
             loc_vars = function(self, info_queue, card)
@@ -3880,7 +3767,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "tribe_" .. obj,
             name = "Tribe " .. upp_obj,
-            soul_pos = {x = 1, y = 14},
             rarity = 3,
             config = {extra = {Xmult = 1.5, type = 'Flush'}},
             loc_vars = function(self, info_queue, card)
@@ -3899,7 +3785,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "stuntman_" .. obj,
             name = "Stuntman " .. upp_obj,
-            soul_pos = {x = 2, y = 14},
             rarity = 3,
             config = {extra = {h_size = 1, chip_mod = 125}},
             loc_vars = function(self, info_queue, card)
@@ -3924,7 +3809,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "invisible_" .. obj,
             name = "Invisible " .. upp_obj,
-            soul_pos = {x = 3, y = 14},
             rarity = 3,
             draw = function(self, card, layer)
                 if card.config.center.discovered or card.bypass_discovery_center then
@@ -3989,7 +3873,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "brainstorm_" .. obj,
             name = "Brainstorm " .. upp_obj,
-            soul_pos = {x = 4, y = 14},
             rarity = 3,
             loc_vars = function(self, info_queue, card)
                 main_end = (card.area and card.area == G.jokers) and {
@@ -4022,7 +3905,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "satellite_" .. obj,
             name = "Satellite" .. upp_obj,
-            soul_pos = {x = 5, y = 14},
             rarity = 2,
             config = {extra = {dollars = 1}},
             loc_vars = function(self, info_queue, card)
@@ -4043,7 +3925,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "shoot_the_moon_" .. obj,
             name = "Shoot The Moon " .. upp_obj,
-            soul_pos = {x = 6, y = 14},
             rarity = 1,
             config = {extra = {mult = 7}},
             loc_vars = function(self, info_queue, card)
@@ -4069,7 +3950,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "drivers_license_" .. obj,
             name = "Driver's " .. upp_obj,
-            soul_pos = {x = 6, y = 14},
             rarity = 3,
             config = {extra = {xmult = 1.75, driver_amount = 16}},
             loc_vars = function(self, info_queue, card)
@@ -4098,7 +3978,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "cartomancer_" .. obj,
             name = "Cartomancer " .. upp_obj,
-            soul_pos = {x = 7, y = 14},
             rarity = 2,
             mat_calculate_obj = function(self, card, context)
                 if context.setting_blind and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
@@ -4132,7 +4011,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "astronomer_" .. obj,
             name = "Astronomer " .. upp_obj,
-            soul_pos = {x = 7, y = 14},
             rarity = 2,
             config = {extra = {dollars = 2}},
             loc_vars = function(self, info_queue, card)
@@ -4175,7 +4053,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "burnt_" .. obj,
             name = "Burnt " .. upp_obj,
-            soul_pos = {x = 7, y = 14},
             rarity = 3,
             mat_calculate_obj = function(self, card, context)
                 if context.pre_discard and G.GAME.current_round.discards_used <= 0 and not context.hook then
@@ -4192,7 +4069,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "bootstraps_" .. obj,
             name = "Boostraps " .. upp_obj,
-            soul_pos = {x = 8, y = 14},
             rarity = 2,
             config = {extra = {mult = 1, dollars = 5}},
             loc_vars = function(self, info_queue, card)
@@ -4211,7 +4087,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "canio_" .. obj,
             name = "Canio " .. upp_obj,
-            soul_pos = {x = 9, y = 14},
             rarity = 4,
             config = {extra = {xmult = 1, xmult_gain = 0.5}},
             loc_vars = function(self, info_queue, card)
@@ -4240,7 +4115,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "triboulet_" .. obj,
             name = "Triboulet " .. upp_obj,
-            soul_pos = {x = 0, y = 15},
             rarity = 4,
             config = {extra = {xmult = 1.5}},
             loc_vars = function(self, info_queue, card)
@@ -4260,7 +4134,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "yorick_" .. obj,
             name = "Yorick " .. upp_obj,
-            soul_pos = {x = 1, y = 15},
             rarity = 4,
             config = {extra = {xmult = 1, xmult_gain = 0.5, discards = 23, discards_remaining = 23}},
             loc_vars = function(self, info_queue, card)
@@ -4297,7 +4170,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "chicot_" .. obj,
             name = "Chicot " .. upp_obj,
-            soul_pos = {x = 2, y = 15},
             rarity = 4,
             config = {extra = {xmult = 1.75}},
             loc_vars = function(self, info_queue, card)
@@ -4344,7 +4216,6 @@ for _, obj in ipairs(mat_mod.objects) do
         {
             key = "perkeo_" .. obj,
             name = "Perkeo " .. upp_obj,
-            soul_pos = {x = 3, y = 15},
             rarity = 4,
             loc_vars = function(self, info_queue, card)
                 info_queue[#info_queue + 1] = {key = 'e_negative_consumable', set = 'Edition', config = {extra = 1}}
@@ -4373,7 +4244,10 @@ local pos = {x = 0, y = 0}
 for i = 1, #effects["hat"] do
     for _, obj in ipairs(mat_mod.objects) do
         effects[obj][i].mat_type = obj
-        effects[obj][i].atlas = "mat_" .. obj .. "s"
+        effects[obj][i].atlas = "mat_" .. obj .. "s_cards"
+        effects[obj][i].pos = effects[obj][i].pos or {x = 0, y = 0}
+        effects[obj][i].soul_atlas = "mat_" .. obj .. "s"
+        effects[obj][i].soul_pos = {x = pos.x, y = pos.y}
         effects[obj][i].mat_joker_pos = {x = pos.x, y = pos.y}
         effects[obj][i].mat_joker_atlas = "mat_joker_" .. obj .. "s"
         SMODS["Mat_obj"](effects[obj][i])
@@ -4385,45 +4259,6 @@ for i = 1, #effects["hat"] do
         pos.y = pos.y + 1
     end
 end
-
-SMODS.ObjectType({
-	key = "Mat_hat",
-	cards = {},
-	inject = function(self)
-		SMODS.ObjectType.inject(self)
-        for _, center in ipairs(G.P_CENTERS) do
-            if center.set == "Mat_obj" and center.mat_type == "hat" then
-                self:inject_card(center)
-            end
-        end
-	end,
-})
-
-SMODS.ObjectType({
-	key = "Mat_head",
-	cards = {},
-	inject = function(self)
-		SMODS.ObjectType.inject(self)
-        for _, center in ipairs(G.P_CENTERS) do
-            if center.set == "Mat_obj" and center.mat_type == "head" then
-                self:inject_card(center)
-            end
-        end
-	end,
-})
-
-SMODS.ObjectType({
-	key = "Mat_collar",
-	cards = {},
-	inject = function(self)
-		SMODS.ObjectType.inject(self)
-        for _, center in ipairs(G.P_CENTERS) do
-            if center.set == "Mat_obj" and center.mat_type == "collar" then
-                self:inject_card(center)
-            end
-        end
-	end,
-})
 
 -- TODO: Move funcs to proper files
 
