@@ -76,7 +76,35 @@ local loc = {
                     'Find this collar in an unseeded',
                     'run to find out what it does'
                 }
-            }
+            },
+            p_mat_hat = {
+				name = "Hat Pack",
+				text = {
+					"Choose {C:attention}#1#{} of up to",
+					"{C:attention}#2#{C:red} Hats{}",
+				},
+			},
+            p_mat_head = {
+				name = "Head Pack",
+				text = {
+					"Choose {C:attention}#1#{} of up to",
+					"{C:attention}#2#{C:attention} Heads{}",
+				},
+			},
+            p_mat_collar = {
+				name = "Collar Pack",
+				text = {
+					"Choose {C:attention}#1#{} of up to",
+					"{C:attention}#2#{C:blue} Collars{}",
+				},
+			},
+            p_mat_material = {
+				name = "Material Pack",
+				text = {
+					"Choose {C:attention}#1#{} of up to",
+					"{C:attention}#2#{C:gold} Materials{}",
+				},
+			},
         }
     }
 }

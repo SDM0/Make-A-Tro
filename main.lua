@@ -9,6 +9,7 @@ mat_mod.objects = {"hat", "head", "collar"}
 assert(SMODS.load_file("data/utils.lua"))()
 assert(SMODS.load_file("data/overrides.lua"))()
 assert(SMODS.load_file("data/objects.lua"))()
+assert(SMODS.load_file("data/boosters.lua"))()
 assert(SMODS.load_file("data/joker.lua"))()
 
 G.FUNCS.mat_can_add_joker = function(e)
