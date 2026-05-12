@@ -74,19 +74,19 @@ SMODS.Joker{
     calculate = function(self, card, context)
         local hat_ret, hat_trig = {}, {}
         local hat = G.P_CENTERS[card.ability.extra.hat.key]
-        if hat and hat.mat_calculate_obj and type(hat.mat_calculate_obj) == 'function' then
+        if not card.ability.extra.hat.exhausted and hat and hat.mat_calculate_obj and type(hat.mat_calculate_obj) == 'function' then
             hat_ret, hat_trig = G.P_CENTERS[card.ability.extra.hat.key]:mat_calculate_obj(card.ability.extra.hat, context)
         end
 
         local head_ret, head_trig = {}, {}
         local head = G.P_CENTERS[card.ability.extra.head.key]
-        if head and head.mat_calculate_obj and type(head.mat_calculate_obj) == 'function' then
+        if not card.ability.extra.head.exhausted and head and head.mat_calculate_obj and type(head.mat_calculate_obj) == 'function' then
             head_ret, head_trig = G.P_CENTERS[card.ability.extra.head.key]:mat_calculate_obj(card.ability.extra.head, context)
         end
 
         local collar_ret, collar_trig = {}, {}
         local collar = G.P_CENTERS[card.ability.extra.collar.key]
-        if collar and collar.mat_calculate_obj and type(collar.mat_calculate_obj) == 'function' then
+        if not card.ability.extra.collar.exhausted and collar and collar.mat_calculate_obj and type(collar.mat_calculate_obj) == 'function' then
             collar_ret, collar_trig = G.P_CENTERS[card.ability.extra.collar.key]:mat_calculate_obj(card.ability.extra.collar, context)
         end
 

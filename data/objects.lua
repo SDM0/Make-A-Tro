@@ -107,7 +107,6 @@ for _, obj in ipairs(mat_mod.objects) do
     }
 
     effects[obj] = {
-
         {
             key = 'joker_' .. obj,
             name = 'Joker ' .. upp_obj,
@@ -928,27 +927,8 @@ for _, obj in ipairs(mat_mod.objects) do
             mat_calculate_obj = function(self, card, context)
                 if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint then
                     local jkr, my_pos = mat_mod.get_parent_obj(card)
-                    if not jkr.mat_being_removed and SMODS.pseudorandom_probability(card, "mat_gros_michel", G.GAME.probabilities.normal, card.ability.extra.odds) then
-                        G.E_MANAGER:add_event(Event({
-                            func = function()
-                                play_sound('tarot1')
-                                jkr.T.r = -0.2
-                                jkr:juice_up(0.3, 0.4)
-                                jkr.mat_being_removed = true
-                                jkr.states.drag.is = true
-                                jkr.children.center.pinch.x = true
-                                G.E_MANAGER:add_event(Event({
-                                    trigger = 'after',
-                                    delay = 0.3,
-                                    blockable = false,
-                                    func = function()
-                                        jkr:remove()
-                                        return true
-                                    end
-                                }))
-                                return true
-                            end
-                        }))
+                    if SMODS.pseudorandom_probability(card, "mat_gros_michel", G.GAME.probabilities.normal, card.ability.extra.odds) then
+                        mat_mod.remove_obj(jkr, card.type)
                         G.GAME.pool_flags.mat_gros_michel_extinct = true
                         return {
                             message = localize('k_extinct_ex')
@@ -1251,27 +1231,8 @@ for _, obj in ipairs(mat_mod.objects) do
             mat_calculate_obj = function(self, card, context)
                 if context.after and context.main_eval and not context.blueprint then
                     local jkr, my_pos = mat_mod.get_parent_obj(card)
-                    if not jkr.mat_being_removed and card.ability.extra.chips - card.ability.extra.chip_mod <= 0 then
-                        G.E_MANAGER:add_event(Event({
-                            func = function()
-                                play_sound('tarot1')
-                                jkr.T.r = -0.2
-                                jkr:juice_up(0.3, 0.4)
-                                jkr.mat_being_removed = true
-                                jkr.states.drag.is = true
-                                jkr.children.center.pinch.x = true
-                                G.E_MANAGER:add_event(Event({
-                                    trigger = 'after',
-                                    delay = 0.3,
-                                    blockable = false,
-                                    func = function()
-                                        jkr:remove()
-                                        return true
-                                    end
-                                }))
-                                return true
-                            end
-                        }))
+                    if card.ability.extra.chips - card.ability.extra.chip_mod <= 0 then
+                        mat_mod.remove_obj(jkr, card.type)
                         return {
                             message = localize('k_melted_ex'),
                             colour = G.C.CHIPS
@@ -1627,27 +1588,8 @@ for _, obj in ipairs(mat_mod.objects) do
             mat_calculate_obj = function(self, card, context)
                 if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint then
                     local jkr, my_pos = mat_mod.get_parent_obj(card)
-                    if not jkr.mat_being_removed and SMODS.pseudorandom_probability(card, "mat_gros_michel", G.GAME.probabilities.normal, card.ability.extra.odds) then
-                        G.E_MANAGER:add_event(Event({
-                            func = function()
-                                play_sound('tarot1')
-                                jkr.T.r = -0.2
-                                jkr:juice_up(0.3, 0.4)
-                                jkr.mat_being_removed = true
-                                jkr.states.drag.is = true
-                                jkr.children.center.pinch.x = true
-                                G.E_MANAGER:add_event(Event({
-                                    trigger = 'after',
-                                    delay = 0.3,
-                                    blockable = false,
-                                    func = function()
-                                        jkr:remove()
-                                        return true
-                                    end
-                                }))
-                                return true
-                            end
-                        }))
+                    if SMODS.pseudorandom_probability(card, "mat_gros_michel", G.GAME.probabilities.normal, card.ability.extra.odds) then
+                        mat_mod.remove_obj(jkr, card.type)
                         return {
                             message = localize('k_extinct_ex')
                         }
@@ -2251,27 +2193,8 @@ for _, obj in ipairs(mat_mod.objects) do
             mat_calculate_obj = function(self, card, context)
                 if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint then
                     local jkr, my_pos = mat_mod.get_parent_obj(card)
-                    if not jkr.mat_being_removed and card.ability.extra.h_size - card.ability.extra.h_mod <= 0 then
-                        G.E_MANAGER:add_event(Event({
-                            func = function()
-                                play_sound('tarot1')
-                                jkr.T.r = -0.2
-                                jkr:juice_up(0.3, 0.4)
-                                jkr.mat_being_removed = true
-                                jkr.states.drag.is = true
-                                jkr.children.center.pinch.x = true
-                                G.E_MANAGER:add_event(Event({
-                                    trigger = 'after',
-                                    delay = 0.3,
-                                    blockable = false,
-                                    func = function()
-                                        jkr:remove()
-                                        return true
-                                    end
-                                }))
-                                return true
-                            end
-                        }))
+                    if card.ability.extra.h_size - card.ability.extra.h_mod <= 0 then
+                        mat_mod.remove_obj(jkr, card.type)
                         return {
                             message = localize('k_eaten_ex'),
                             colour = G.C.FILTER
@@ -2708,27 +2631,8 @@ for _, obj in ipairs(mat_mod.objects) do
             mat_calculate_obj = function(self, card, context)
                 if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint then
                     local jkr, my_pos = mat_mod.get_parent_obj(card)
-                    if not jkr.mat_being_removed and card.ability.extra.mult - card.ability.extra.mult_loss <= 0 then
-                        G.E_MANAGER:add_event(Event({
-                            func = function()
-                                play_sound('tarot1')
-                                jkr.T.r = -0.2
-                                jkr:juice_up(0.3, 0.4)
-                                jkr.mat_being_removed = true
-                                jkr.states.drag.is = true
-                                jkr.children.center.pinch.x = true
-                                G.E_MANAGER:add_event(Event({
-                                    trigger = 'after',
-                                    delay = 0.3,
-                                    blockable = false,
-                                    func = function()
-                                        jkr:remove()
-                                        return true
-                                    end
-                                }))
-                                return true
-                            end
-                        }))
+                    if card.ability.extra.mult - card.ability.extra.mult_loss <= 0 then
+                        mat_mod.remove_obj(jkr, card.type)
                         return {
                             message = localize('k_eaten_ex'),
                             colour = G.C.RED
@@ -2804,27 +2708,8 @@ for _, obj in ipairs(mat_mod.objects) do
             end,
             mat_calculate_obj = function(self, card, context)
                 if context.discard and not context.blueprint then
-                    if not jkr.mat_being_removed and card.ability.extra.Xmult - card.ability.extra.Xmult_loss <= 1 then
-                        G.E_MANAGER:add_event(Event({
-                            func = function()
-                                play_sound('tarot1')
-                                jkr.T.r = -0.2
-                                jkr:juice_up(0.3, 0.4)
-                                jkr.mat_being_removed = true
-                                jkr.states.drag.is = true
-                                jkr.children.center.pinch.x = true
-                                G.E_MANAGER:add_event(Event({
-                                    trigger = 'after',
-                                    delay = 0.3,
-                                    blockable = false,
-                                    func = function()
-                                        jkr:remove()
-                                        return true
-                                    end
-                                }))
-                                return true
-                            end
-                        }))
+                    if card.ability.extra.Xmult - card.ability.extra.Xmult_loss <= 1 then
+                        mat_mod.remove_obj(jkr, card.type)
                         return {
                             message = localize('k_eaten_ex'),
                             colour = G.C.FILTER
@@ -2882,27 +2767,8 @@ for _, obj in ipairs(mat_mod.objects) do
                 end
                 if context.after and not context.blueprint then
                     local jkr, my_pos = mat_mod.get_parent_obj(card)
-                    if not jkr.mat_being_removed and card.ability.extra.hands_left - 1 <= 0 then
-                        G.E_MANAGER:add_event(Event({
-                            func = function()
-                                play_sound('tarot1')
-                                jkr.T.r = -0.2
-                                jkr:juice_up(0.3, 0.4)
-                                jkr.mat_being_removed = true
-                                jkr.states.drag.is = true
-                                jkr.children.center.pinch.x = true
-                                G.E_MANAGER:add_event(Event({
-                                    trigger = 'after',
-                                    delay = 0.3,
-                                    blockable = false,
-                                    func = function()
-                                        jkr:remove()
-                                        return true
-                                    end
-                                }))
-                                return true
-                            end
-                        }))
+                    if card.ability.extra.hands_left - 1 <= 0 then
+                        mat_mod.remove_obj(jkr, card.type)
                         return {
                             message = localize('k_drank_ex'),
                             colour = G.C.FILTER

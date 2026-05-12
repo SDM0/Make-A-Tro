@@ -15,7 +15,7 @@ function mat_mod.init_obj(key)
     if not G.P_CENTERS[key] then return end
 
     local type = key:match("_(%w+)$")
-    return {key = key, ability = deep_copy(G.P_CENTERS[key].config), type = type}
+    return {key = key, ability = deep_copy(G.P_CENTERS[key].config), type = type, exhausted = false}
 end
 
 function mat_mod.generate_name(t)
@@ -66,6 +66,7 @@ local aliases = {
     ["cd"] = "c_mat_ceremonial_dagger",
     ["lc"] = "c_mat_loyalty_card",
     ["8b"] = "c_mat_8_ball",
+    -- TODO: Add more eventually
 }
 
 -- Create a (random or not) tri-Joker
@@ -170,6 +171,38 @@ function mat_mod.get_parent_obj(obj)
     end
     --print("obj not found")
     --print(obj)
+end
+
+-- Remove joker effect
+function mat_mod.remove_obj(card, type)
+    if card and card.ability.extra and card.ability.extra and card.ability.extra[type] then
+        card.ability.extra[type].exhausted = true
+    end
+
+    if card.ability.extra.hat.key == "c_mat_nothing_hat" and
+    card.ability.extra.head.key == "c_mat_nothing_head" and
+    card.ability.extra.collar.key == "c_mat_nothing_collar" then
+        G.E_MANAGER:add_event(Event({
+            func = function()
+                play_sound('tarot1')
+                card.T.r = -0.2
+                card:juice_up(0.3, 0.4)
+                card.mat_being_removed = true
+                card.states.drag.is = true
+                card.children.center.pinch.x = true
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.3,
+                    blockable = false,
+                    func = function()
+                        card:remove()
+                        return true
+                    end
+                }))
+                return true
+            end
+        }))
+    end
 end
 
 -- Used for the "Pareidolia" object

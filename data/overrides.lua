@@ -32,9 +32,13 @@ function G.UIDEF.card_h_popup(card)
     local AUT = card.ability_UIBox_table
     if AUT.mat_hat then
         local desc_ui = ret_val.nodes[1].nodes[1].nodes[1].nodes
-        desc_ui[2] = desc_from_rows(AUT.mat_hat)
-        table.insert(desc_ui, #desc_ui + (card.config.center.discovered and 0 or 1), desc_from_rows(AUT.mat_head))
-        table.insert(desc_ui, #desc_ui + (card.config.center.discovered and 0 or 1), desc_from_rows(AUT.mat_collar))
+        desc_ui[2] = not card.ability.extra.hat.exhausted and desc_from_rows(AUT.mat_hat) or nil
+        if not card.ability.extra.head.exhausted then
+            table.insert(desc_ui, #desc_ui + (card.config.center.discovered and 0 or 1), desc_from_rows(AUT.mat_head))
+        end
+        if not card.ability.extra.collar.exhausted then
+            table.insert(desc_ui, #desc_ui + (card.config.center.discovered and 0 or 1), desc_from_rows(AUT.mat_collar))
+        end
     end
     return ret_val
 end
