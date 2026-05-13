@@ -179,9 +179,9 @@ function mat_mod.remove_obj(card, type)
         card.ability.extra[type].exhausted = true
     end
 
-    if card.ability.extra.hat.key == "c_mat_nothing_hat" and
-    card.ability.extra.head.key == "c_mat_nothing_head" and
-    card.ability.extra.collar.key == "c_mat_nothing_collar" then
+    if card.ability.extra.hat.exhausted and
+    card.ability.extra.head.exhausted and
+    card.ability.extra.collar.exhausted and not card.mat_being_removed then
         G.E_MANAGER:add_event(Event({
             func = function()
                 play_sound('tarot1')
