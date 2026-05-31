@@ -80,13 +80,33 @@ function create_UIBox_your_collection_objects(e)
 				n = G.UIT.R,
 				config = { align = "cm" },
 				nodes = {
-					create_option_cycle({ options = obj_options, w = 4.5, cycle_shoulders = true, opt_callback =
-					'exit_overlay_menu', current_option = 1, colour = G.C.RED, no_pips = true, focus_args = { snap_to = true, nav = 'wide' } })
+					create_option_cycle({ options = obj_options, w = 4.5, cycle_shoulders = true, mat_obj_type = obj, opt_callback =
+					'your_collection_object_page', current_option = 1, colour = G.C.RED, no_pips = true, focus_args = { snap_to = true, nav = 'wide' } })
 				}
 			}
 		}
 	})
 	return t
+end
+
+G.FUNCS.your_collection_object_page = function(args)
+	if not args or not args.cycle_config then return end
+	for j = 1, #G.your_collection do
+		for i = #G.your_collection[j].cards, 1, -1 do
+			local c = G.your_collection[j]:remove_card(G.your_collection[j].cards[i])
+			c:remove()
+			c = nil
+		end
+	end
+	for i = 1, 5 do
+		for j = 1, #G.your_collection do
+			local center = G.P_CENTERS
+			[G.GAME["used_mat_" .. args.cycle_config.mat_obj_type][i + (j - 1) * 5 + (5 * #G.your_collection * (args.cycle_config.current_option - 1))]]
+			if not center then break end
+			local card = Card(G.your_collection[j].T.x + G.your_collection[j].T.w / 2, G.your_collection[j].T.y, G.CARD_W, G.CARD_H, G.P_CARDS.empty, center)
+			G.your_collection[j]:emplace(card)
+		end
+	end
 end
 
 G.FUNCS.your_collection_objects = function(e)
@@ -109,6 +129,12 @@ G.FUNCS.mat_add_joker = function(e)
 		for i = #G.GAME["used_mat_" .. obj], 1, -1 do
 			if G.GAME["used_mat_" .. obj][i] == copy.ability.extra[obj].key then
 				table.remove(G.GAME["used_mat_" .. obj], i)
+				break
+			end
+		end
+		for i = #G.GAME["used_mat"], 1, -1 do
+			if G.GAME["used_mat"][i] == copy.ability.extra[obj].key then
+				table.remove(G.GAME["used_mat"], i)
 				break
 			end
 		end
@@ -281,6 +307,113 @@ function G.FUNCS.mat_create_joker(e)
 	G.FUNCS.overlay_menu {
 		definition = create_UIBox_mat_joker_creation(e),
 	}
+end
+
+function G.UIDEF.mat_used_materials()
+	G.your_collection = {}
+	local mat_tables = {}
+	local silent = false
+
+	for j = 1, 2 do
+		G.your_collection[j] = CardArea(
+			G.ROOM.T.x + 0.2 * G.ROOM.T.w / 2, G.ROOM.T.h,
+			5 * G.CARD_W,
+			0.95 * G.CARD_H,
+			{ card_limit = 5, type = 'title', highlight_limit = 0, collection = true })
+		table.insert(mat_tables,
+			{
+				n = G.UIT.R,
+				config = { align = "cm", padding = 0.07, no_fill = true },
+				nodes = {
+					{ n = G.UIT.O, config = { object = G.your_collection[j] } }
+				}
+			}
+		)
+	end
+
+	local obj_options = {}
+	
+	if G.GAME["used_mat"] then
+		for i = 1, math.ceil(#G.GAME["used_mat"] / (5 * #G.your_collection)) do
+			table.insert(obj_options,
+				localize('k_page') ..
+				' ' .. tostring(i) .. '/' .. tostring(math.ceil(#G.GAME["used_mat"] / (5 * #G.your_collection))))
+		end
+
+		for i = 1, 5 do
+			for j = 1, #G.your_collection do
+				if G.GAME["used_mat"][i + (j - 1) * 5] then
+					local card = Card(G.your_collection[j].T.x + G.your_collection[j].T.w / 2, G.your_collection[j].T.y,
+						G.CARD_W, G.CARD_H, nil, G.P_CENTERS[G.GAME["used_mat"][i + (j - 1) * 5]])
+					silent = true
+					G.your_collection[j]:emplace(card)
+				end
+			end
+		end
+	end
+
+	local t = silent and G.GAME["used_mat"] and {
+			n = G.UIT.ROOT,
+			config = { align = "cm", colour = G.C.CLEAR },
+			nodes = {
+				{
+					n = G.UIT.R,
+					config = { align = "cm" },
+					nodes = {
+						{ n = G.UIT.O, config = { object = DynaText({ string = { localize('ph_mats_redeemed') }, colours = { G.C.UI.TEXT_LIGHT }, bump = true, scale = 0.6 }) } }
+					}
+				},
+				{
+					n = G.UIT.R,
+					config = { align = "cm", minh = 0.5 },
+					nodes = {
+					}
+				},
+				{
+					n = G.UIT.R,
+					config = { align = "cm", colour = G.C.BLACK, r = 1, padding = 0.15, emboss = 0.05 },
+					nodes = {
+						{ n = G.UIT.R, config = { align = "cm" }, nodes = mat_tables },
+					}
+				},
+				{
+					n = G.UIT.R,
+					config = { align = "cm" },
+					nodes = {
+						create_option_cycle({ options = obj_options, w = 4.5, cycle_shoulders = true, opt_callback =
+						'your_collection_used_mat_page', current_option = 1, colour = G.C.RED, no_pips = true, focus_args = { snap_to = true, nav = 'wide' } })
+					}
+				}
+			}
+		} or
+		{
+			n = G.UIT.ROOT,
+			config = { align = "cm", colour = G.C.CLEAR },
+			nodes = {
+				{ n = G.UIT.O, config = { object = DynaText({ string = { localize('ph_no_mats') }, colours = { G.C.UI.TEXT_LIGHT }, bump = true, scale = 0.6 }) } }
+			}
+		}
+	return t
+end
+
+G.FUNCS.your_collection_used_mat_page = function(args)
+	if not args or not args.cycle_config then return end
+	for j = 1, #G.your_collection do
+		for i = #G.your_collection[j].cards, 1, -1 do
+			local c = G.your_collection[j]:remove_card(G.your_collection[j].cards[i])
+			c:remove()
+			c = nil
+		end
+	end
+	for i = 1, 5 do
+		for j = 1, #G.your_collection do
+			local center = G.P_CENTERS
+			[G.GAME["used_mat"][i + (j - 1) * 5 + (5 * #G.your_collection * (args.cycle_config.current_option - 1))]]
+			if not center then break end
+			local card = Card(G.your_collection[j].T.x + G.your_collection[j].T.w / 2, G.your_collection[j].T.y, G.CARD_W, G.CARD_H, G.P_CARDS.empty, center)
+			G.your_collection[j]:emplace(card)
+		end
+	end
 end
 
 local cc = Card.click
