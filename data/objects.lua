@@ -29,7 +29,7 @@ SMODS.ObjectType({
 
 SMODS["Mat_obj"] = SMODS.Consumable:extend({
     set = 'Mat_obj',
-    cost = 3,
+    cost = 2,
     rarity = 1,
     mat_type = "hat",
     mat_joker_pos = {x = 0, y = 0},
@@ -38,7 +38,9 @@ SMODS["Mat_obj"] = SMODS.Consumable:extend({
     use = function(self, card)
         local used = "used_mat_" .. self.mat_type
         G.GAME[used] = G.GAME[used] or {}
+        G.GAME["used_mat"] = G.GAME["used_mat"] or {}
         table.insert(G.GAME[used], card.config.center.key)
+        table.insert(G.GAME["used_mat"], card.config.center.key)
     end,
     in_pool = function(self)
         if not G.jokers then return false end
@@ -4116,6 +4118,10 @@ for i = 1, #effects["hat"] do
         effects[obj][i].soul_pos = {x = pos.x, y = pos.y}
         effects[obj][i].mat_joker_pos = {x = pos.x, y = pos.y}
         effects[obj][i].mat_joker_atlas = "mat_joker_" .. obj .. "s"
+
+        local r = effects[obj][i].rarity
+        effects[obj][i].cost = (r == 1 and 2) or (r == 2 and 3) or (r == 3 and 4) or (r == 4 and 5) or 2
+
         SMODS["Mat_obj"](effects[obj][i])
     end
 
