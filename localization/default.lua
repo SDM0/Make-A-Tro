@@ -12,6 +12,8 @@ local loc = {
 
             k_mat_create_joker = "Create your Joker!",
 
+            k_mat_pack = "Material Pack",
+
             k_mat_special = "Special",
 
             k_mat_hat = "Hat",
@@ -24,14 +26,17 @@ local loc = {
             b_mat_obj_cards = "Materials",
 
             k_mat_active = "Active",
-            k_mat_inactive = "Inactive"
+            k_mat_inactive = "Inactive",
+
+            ph_mats_redeemed = "Material(s) in possession",
+            ph_no_mats = "No material in possession",
         }
     },
     descriptions = {
         Joker = {
             j_mat_custom_joker = {
                 name = "#1# Joker",
-                text = {{"{elements:1}{}"},{},{}}
+                text = {{},{},{}}
             },
             j_mat_unknown_joker = {
                 name = "Custom Joker",
@@ -81,28 +86,32 @@ local loc = {
 				name = "Hat Pack",
 				text = {
 					"Choose {C:attention}#1#{} of up to",
-					"{C:attention}#2#{C:red} Hats{}",
+					"{C:attention}#2#{C:red} Hats{} cards to",
+                    "be used immediately",
 				},
 			},
             p_mat_head = {
 				name = "Head Pack",
 				text = {
 					"Choose {C:attention}#1#{} of up to",
-					"{C:attention}#2#{C:attention} Heads{}",
+					"{C:attention}#2#{C:attention} Heads{} cards to",
+                    "be used immediately",
 				},
 			},
             p_mat_collar = {
 				name = "Collar Pack",
 				text = {
 					"Choose {C:attention}#1#{} of up to",
-					"{C:attention}#2#{C:blue} Collars{}",
+					"{C:attention}#2#{C:blue} Collars{} cards to",
+                    "be used immediately",
 				},
 			},
             p_mat_material = {
 				name = "Material Pack",
 				text = {
 					"Choose {C:attention}#1#{} of up to",
-					"{C:attention}#2#{C:gold} Materials{}",
+					"{C:attention}#2#{C:gold} Materials{} cards to",
+                    "be used immediately",
 				},
 			},
         }
