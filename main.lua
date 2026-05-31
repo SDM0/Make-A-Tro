@@ -365,7 +365,7 @@ function G.UIDEF.mat_used_materials()
 				},
 				{
 					n = G.UIT.R,
-					config = { align = "cm", minh = 0.5 },
+					config = { align = "cm", minh = 0.1 },
 					nodes = {
 					}
 				},
