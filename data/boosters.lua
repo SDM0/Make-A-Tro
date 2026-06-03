@@ -1,67 +1,11 @@
 -- TODO: Add missing loc and colors
 
 SMODS.Booster({
-	key = "hat",
+	key = "material_normal_1",
 	--pos = {x = 0, y = 0},
 	config = {extra = 3, choose = 1},
 	cost = 4,
-	kind = "Mat",
-	group_key = "k_mat_pack",
-	ease_background_colour = function(self)
-		ease_colour(G.C.DYN_UI.MAIN, G.C.RED)
-        ease_background_colour{new_colour = G.C.RED, special_colour = darken(G.C.BLACK, 0.2), contrast = 2}
-    end,
-	create_card = function(self, card, i)
-		return SMODS.create_card({
-			set = "Mat_hat",
-			skip_materialize = true,
-		})
-	end,
-})
-
-SMODS.Booster({
-	key = "head",
-	--pos = {x = 0, y = 0},
-	config = {extra = 3, choose = 1},
-	cost = 4,
-	kind = "Mat",
-	group_key = "k_mat_pack",
-	ease_background_colour = function(self)
-		ease_colour(G.C.DYN_UI.MAIN, G.C.FILTER)
-        ease_background_colour{new_colour = G.C.FILTER, special_colour = darken(G.C.BLACK, 0.2), contrast = 2}
-    end,
-	create_card = function(self, card, i)
-		return SMODS.create_card({
-			set = "Mat_head",
-			skip_materialize = true,
-		})
-	end,
-})
-
-SMODS.Booster({
-	key = "collar",
-	--pos = {x = 0, y = 0},
-	config = {extra = 3, choose = 1},
-	cost = 4,
-	kind = "Mat",
-	group_key = "k_mat_pack",
-	ease_background_colour = function(self)
-		ease_colour(G.C.DYN_UI.MAIN, G.C.BLUE)
-        ease_background_colour{new_colour = G.C.BLUE, special_colour = darken(G.C.BLACK, 0.2), contrast = 2}
-    end,
-	create_card = function(self, card, i)
-		return SMODS.create_card({
-			set = "Mat_collar",
-			skip_materialize = true,
-		})
-	end,
-})
-
-SMODS.Booster({
-	key = "material",
-	--pos = {x = 0, y = 0},
-	config = {extra = 5, choose = 2},
-	cost = 6,
+	weight = 0.6,
 	kind = "Mat",
 	group_key = "k_mat_pack",
 	ease_background_colour = function(self)
@@ -69,9 +13,105 @@ SMODS.Booster({
         ease_background_colour{new_colour = G.C.GOLD, special_colour = darken(G.C.GOLD, 0.2), contrast = 2}
     end,
 	create_card = function(self, card, i)
+		if (i - 1) % 3 == 0 then
+			mat_mod.booster_cycle = {"hat", "head", "collar"}
+		end
+
+		local type, idx = pseudorandom_element(mat_mod.booster_cycle, pseudoseed('mat_booster_type'))
+		table.remove(mat_mod.booster_cycle, idx)
+
 		return SMODS.create_card({
-			set = "Mat_obj",
+			set = "Mat_" .. type,
 			skip_materialize = true,
+			soulable = true,
+			key_append = "mat"
+		})
+	end,
+})
+
+SMODS.Booster({
+	key = "material_normal_2",
+	--pos = {x = 0, y = 0},
+	config = {extra = 3, choose = 1},
+	cost = 4,
+	weight = 0.6,
+	kind = "Mat",
+	group_key = "k_mat_pack",
+	ease_background_colour = function(self)
+		ease_colour(G.C.DYN_UI.MAIN, G.C.GOLD)
+        ease_background_colour{new_colour = G.C.GOLD, special_colour = darken(G.C.GOLD, 0.2), contrast = 2}
+    end,
+	create_card = function(self, card, i)
+		if (i - 1) % 3 == 0 then
+			mat_mod.booster_cycle = {"hat", "head", "collar"}
+		end
+
+		local type, idx = pseudorandom_element(mat_mod.booster_cycle, pseudoseed('mat_booster_type'))
+		table.remove(mat_mod.booster_cycle, idx)
+
+		return SMODS.create_card({
+			set = "Mat_" .. type,
+			skip_materialize = true,
+			soulable = true,
+			key_append = "mat"
+		})
+	end,
+})
+
+SMODS.Booster({
+	key = "material_jumbo_1",
+	--pos = {x = 0, y = 0},
+	config = {extra = 6, choose = 1},
+	cost = 6,
+	weight = 0.6,
+	kind = "Mat",
+	group_key = "k_mat_pack",
+	ease_background_colour = function(self)
+		ease_colour(G.C.DYN_UI.MAIN, G.C.GOLD)
+        ease_background_colour{new_colour = G.C.GOLD, special_colour = darken(G.C.GOLD, 0.2), contrast = 2}
+    end,
+	create_card = function(self, card, i)
+		if (i - 1) % 3 == 0 then
+			mat_mod.booster_cycle = {"hat", "head", "collar"}
+		end
+
+		local type, idx = pseudorandom_element(mat_mod.booster_cycle, pseudoseed('mat_booster_type'))
+		table.remove(mat_mod.booster_cycle, idx)
+
+		return SMODS.create_card({
+			set = "Mat_" .. type,
+			skip_materialize = true,
+			soulable = true,
+			key_append = "mat"
+		})
+	end,
+})
+
+SMODS.Booster({
+	key = "material_mega_1",
+	--pos = {x = 0, y = 0},
+	config = {extra = 6, choose = 2},
+	cost = 8,
+	weight = 0.15,
+	kind = "Mat",
+	group_key = "k_mat_pack",
+	ease_background_colour = function(self)
+		ease_colour(G.C.DYN_UI.MAIN, G.C.GOLD)
+        ease_background_colour{new_colour = G.C.GOLD, special_colour = darken(G.C.GOLD, 0.2), contrast = 2}
+    end,
+	create_card = function(self, card, i)
+		if (i - 1) % 3 == 0 then
+			mat_mod.booster_cycle = {"hat", "head", "collar"}
+		end
+
+		local type, idx = pseudorandom_element(mat_mod.booster_cycle, pseudoseed('mat_booster_type'))
+		table.remove(mat_mod.booster_cycle, idx)
+
+		return SMODS.create_card({
+			set = "Mat_" .. type,
+			skip_materialize = true,
+			soulable = true,
+			key_append = "mat"
 		})
 	end,
 })

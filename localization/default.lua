@@ -28,7 +28,8 @@ local loc = {
             k_mat_active = "Active",
             k_mat_inactive = "Inactive",
 
-            ph_mats_redeemed = "Material(s) in possession",
+            ph_mats_redeemed_singular = "Material in possession",
+            ph_mats_redeemed_plural = "Materials in possession",
             ph_no_mats = "No material in possession",
         }
     },
@@ -82,37 +83,37 @@ local loc = {
                     'run to find out what it does'
                 }
             },
-            p_mat_hat = {
-				name = "Hat Pack",
-				text = {
-					"Choose {C:attention}#1#{} of up to",
-					"{C:attention}#2#{C:red} Hats{} cards to",
-                    "be used immediately",
-				},
-			},
-            p_mat_head = {
-				name = "Head Pack",
-				text = {
-					"Choose {C:attention}#1#{} of up to",
-					"{C:attention}#2#{C:attention} Heads{} cards to",
-                    "be used immediately",
-				},
-			},
-            p_mat_collar = {
-				name = "Collar Pack",
-				text = {
-					"Choose {C:attention}#1#{} of up to",
-					"{C:attention}#2#{C:blue} Collars{} cards to",
-                    "be used immediately",
-				},
-			},
-            p_mat_material = {
+            p_mat_material_normal_1 = {
 				name = "Material Pack",
-				text = {
-					"Choose {C:attention}#1#{} of up to",
-					"{C:attention}#2#{C:gold} Materials{} cards to",
+                text = {
+                    "Choose {C:attention}#1#{} of up to",
+                    "{C:attention}#2#{C:gold} Materials{} cards to",
                     "be used immediately",
-				},
+                },
+			},
+            p_mat_material_normal_2 = {
+				name = "Material Pack",
+                text = {
+                    "Choose {C:attention}#1#{} of up to",
+                    "{C:attention}#2#{C:gold} Materials{} cards to",
+                    "be used immediately",
+                },
+			},
+            p_mat_material_jumbo_1 = {
+				name = "Jumbo Material Pack",
+                text = {
+                    "Choose {C:attention}#1#{} of up to",
+                    "{C:attention}#2#{C:gold} Materials{} cards to",
+                    "be used immediately",
+                },
+			},
+            p_mat_material_mega_1 = {
+				name = "Mega Material Pack",
+                text = {
+                    "Choose {C:attention}#1#{} of up to",
+                    "{C:attention}#2#{C:gold} Materials{} cards to",
+                    "be used immediately",
+                },
 			},
         }
     }

@@ -3,7 +3,7 @@ SMODS.ConsumableType {
     collection_rows = {6, 6, 6},
     primary_colour = G.C.GOLD,
     secondary_colour = G.C.GOLD,
-    shop_rate = 5,
+    shop_rate = 0, -- TODO: Do vouchers that increase rate
     rarities = {
         { key = "Common" },
         { key = "Uncommon" },
