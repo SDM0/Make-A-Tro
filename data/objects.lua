@@ -3880,7 +3880,7 @@ for _, obj in ipairs(mat_mod.objects) do
             key = "astronomer_" .. obj,
             name = "Astronomer " .. upp_obj,
             rarity = 2,
-            config = {extra = {dollars = 2}},
+            config = {extra = {dollars = 1}},
             loc_vars = function(self, info_queue, card)
                 info_queue[#info_queue+1] = G.P_CENTERS["j_astronomer"]
                 return { vars = {card.ability.extra.dollars} }
@@ -3906,13 +3906,10 @@ for _, obj in ipairs(mat_mod.objects) do
                 }))
             end,
             mat_calculate_obj = function(self, card, context)
-                if context.starting_shop then
-                    G.E_MANAGER:add_event(Event({
-                        func = function()
-                            SMODS.add_booster_to_shop("p_celestial_normal_" .. (math.random(1, 4)))
-                            return true
-                        end
-                    }))
+                if context.poker_hand_changed and context.new_level > context.old_level then
+                    return {
+                        dollars = card.ability.extra.dollars
+                    }
                 end
             end,
         },

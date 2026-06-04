@@ -148,8 +148,8 @@ local jokers = {
     },
     astronomer = {
         "{C:attention}Astronomer{} effect",
-        "Creates a {C:planet}Celestial Pack{}",
-        "when entering shop"
+        "Earn {C:money}$#1#{} for each",
+        "poker hand {C:attention}level up{}",
     },
     banner = {
         "{C:chips}+#1#{} Chips for",
