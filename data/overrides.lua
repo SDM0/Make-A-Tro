@@ -13,12 +13,17 @@ function generate_card_ui(_c, full_UI_table, specific_vars, card_type, badges, h
 
             if G.P_CENTERS[card.ability.extra[obj].key] then
                 vars = (G.P_CENTERS[card.ability.extra[obj].key]:loc_vars({}, card.ability.extra[obj]) or {})
+                main_start = vars.main_start or main_start
                 main_end = vars.main_end or main_end
                 vars = (vars and vars.vars) or {}
             else
                 vars = Card.generate_UIBox_ability_table({ability = card.ability.extra[obj].ability, config = G.P_CENTERS[card.ability.extra[obj].key].config, bypass_lock = true}, true)
             end
+
+            if main_start then mat[obj][#mat[obj] + 1] = main_start end
             localize{type = 'descriptions', set = 'Mat_obj', key = card.ability.extra[obj].key, nodes = mat[obj], vars = vars or specific_vars or {}, AUT = { info = { "I HATE GENERATE_CARD_UI" }}}
+            if main_end then mat[obj][#mat[obj] + 1] = main_end end
+
             ui["mat_" .. obj] = mat[obj]
         end
     end

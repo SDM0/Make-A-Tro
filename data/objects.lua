@@ -2082,9 +2082,9 @@ for _, obj in ipairs(mat_mod.objects) do
             rarity = 2,
             config = { extra = { dollars = 5 } },
             loc_vars = function(self, info_queue, card)
-                local main_end = nil
                 info_queue[#info_queue+1] = G.P_CENTERS["j_luchador"]
-                if card.area and (card.area == G.jokers) then
+                local jkr, my_pos = mat_mod.get_parent_obj(card)
+                if (jkr and jkr.area and jkr.area == G.jokers) then
                     local disableable = G.GAME.blind and ((not G.GAME.blind.disabled) and (G.GAME.blind.boss))
                     main_end = {
                         {
@@ -3366,6 +3366,7 @@ for _, obj in ipairs(mat_mod.objects) do
                 for i = 1, #G.jokers.cards do
                     if G.jokers.cards[i] == jkr then other_joker = G.jokers.cards[i + 1] end
                 end
+                local compatible = other_joker and other_joker ~= card and other_joker.config.center.blueprint_compat
                 main_end = (jkr and jkr.area and jkr.area == G.jokers) and {
                     {
                         n = G.UIT.C,
@@ -3685,7 +3686,6 @@ for _, obj in ipairs(mat_mod.objects) do
             end,
             config = {extra = {invis_rounds = 0, total_rounds = 2}},
             loc_vars = function(self, info_queue, card)
-                local main_end
                 if G.jokers and G.jokers.cards then
                     for _, joker in ipairs(G.jokers.cards) do
                         if joker.edition and joker.edition.negative then
@@ -3743,7 +3743,9 @@ for _, obj in ipairs(mat_mod.objects) do
             name = "Brainstorm " .. upp_obj,
             rarity = 3,
             loc_vars = function(self, info_queue, card)
-                main_end = (card.area and card.area == G.jokers) and {
+                local jkr, my_pos = mat_mod.get_parent_obj(card)
+                local compatible = G.jokers.cards[1] and G.jokers.cards[1] ~= jkr and G.jokers.cards[1].config.center.blueprint_compat
+                main_end = (jkr and jkr.area and jkr.area == G.jokers) and {
                     {
                         n = G.UIT.C,
                         config = {align = "bm", minh = 0.4 },
