@@ -31,22 +31,18 @@ SMODS.Joker{
 
         local name = mat_mod.generate_name({hat = hat, head = head, collar = collar})
 
-        -- Dumb horrible info_queue fetching
-        -- TODO: Do it
-        --G.P_CENTERS[hat.key]:loc_vars(info_queue, hat)
-        --G.P_CENTERS[head.key]:loc_vars(info_queue, head)
-        --G.P_CENTERS[collar.key]:loc_vars(info_queue, collar)
+        G.P_CENTERS[hat.key]:loc_vars(info_queue, hat)
+        G.P_CENTERS[head.key]:loc_vars(info_queue, head)
+        G.P_CENTERS[collar.key]:loc_vars(info_queue, collar)
 
-        --print(info_queue)
-
-        --print(h)
-        --local _main_end = nil
-        --if h and h.main_end then
-        --    _main_end = h.main_end
-        --    --print("main_end set")
-        --end
-
-        -- TODO: Figure out main_end/main_start fetching ugh
+        local seen = {}
+        for i = #info_queue, 1, -1 do
+            if not seen[info_queue[i]] then
+                seen[info_queue[i]] = true
+            else
+                table.remove(info_queue, i)
+            end
+        end
 
         return {vars = {name}}
     end,
