@@ -2,10 +2,10 @@
 
 SMODS.Booster({
 	key = "material_normal_1",
-	--pos = {x = 0, y = 0},
+	pos = {x = 0, y = 5},
 	config = {extra = 3, choose = 1},
 	cost = 4,
-	weight = 0.6,
+	weight = 1,
 	kind = "Mat",
 	group_key = "k_mat_pack",
 	ease_background_colour = function(self)
@@ -31,10 +31,10 @@ SMODS.Booster({
 
 SMODS.Booster({
 	key = "material_normal_2",
-	--pos = {x = 0, y = 0},
+	pos = {x = 0, y = 5},
 	config = {extra = 3, choose = 1},
 	cost = 4,
-	weight = 0.6,
+	weight = 1,
 	kind = "Mat",
 	group_key = "k_mat_pack",
 	ease_background_colour = function(self)
@@ -60,10 +60,10 @@ SMODS.Booster({
 
 SMODS.Booster({
 	key = "material_jumbo_1",
-	--pos = {x = 0, y = 0},
+	pos = {x = 0, y = 5},
 	config = {extra = 6, choose = 1},
 	cost = 6,
-	weight = 0.6,
+	weight = 1,
 	kind = "Mat",
 	group_key = "k_mat_pack",
 	ease_background_colour = function(self)
@@ -89,10 +89,10 @@ SMODS.Booster({
 
 SMODS.Booster({
 	key = "material_mega_1",
-	--pos = {x = 0, y = 0},
+	pos = {x = 0, y = 5},
 	config = {extra = 6, choose = 2},
 	cost = 8,
-	weight = 0.15,
+	weight = 0.25,
 	kind = "Mat",
 	group_key = "k_mat_pack",
 	ease_background_colour = function(self)
