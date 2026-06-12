@@ -324,9 +324,9 @@ local jokers = {
     },
     drivers_license = {
         "{X:mult,C:white} X#1# {} Mult if you have",
-        "at least {C:attention}16{} Enhanced",
+        "at least {C:attention}#2#{} Enhanced",
         "cards in your full deck",
-        "{C:inactive}(Currently {C:attention}#2#{C:inactive})",
+        "{C:inactive}(Currently {C:attention}#3#{C:inactive})",
     },
     droll = {
         "{C:red}+#1#{} Mult if played",
